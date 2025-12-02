@@ -16,8 +16,8 @@ interface HomeProps {
 
 export function Home({ user, recipes, onLike, onRecipeClick, onComment, onShare, onSettingsClick }: HomeProps) {
 
-  const pointsToSteak = 100;
-  const progressPercentage = (user.points / pointsToSteak) * 100;
+  const pointsToNextLevel = 150; // Same as Profile page
+  const progressPercentage = Math.min((user.points / pointsToNextLevel) * 100, 100);
 
   return (
     <div className="max-w-lg mx-auto md:max-w-none md:w-full">
@@ -52,7 +52,7 @@ export function Home({ user, recipes, onLike, onRecipeClick, onComment, onShare,
               <Star className="w-4 h-4 text-[#8B4513]" />
               <span className="text-[#8B4513]">Free Steak Reward</span>
             </div>
-            <span className="text-[#A0522D]">{pointsToSteak - user.points} pts to go!</span>
+            <span className="text-[#A0522D]">{pointsToNextLevel - user.points} pts to go!</span>
           </div>
           <Progress value={progressPercentage} className="h-2" />
         </div>

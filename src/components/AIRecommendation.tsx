@@ -92,6 +92,8 @@ export function AIRecommendation({ recipes, userName, onRecipeClick }: AIRecomme
   const [isLoading, setIsLoading] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showRecommendation, setShowRecommendation] = useState(false);
+  const [showRecipeCard, setShowRecipeCard] = useState(false);
+  const [showProductCard, setShowProductCard] = useState(false);
 
   const currentRec = AI_RECOMMENDATIONS[currentIndex];
   const fullText = currentRec.recipeText;
@@ -100,6 +102,10 @@ export function AIRecommendation({ recipes, userName, onRecipeClick }: AIRecomme
   useEffect(() => {
     if (!showRecommendation) return;
 
+    // Reset card visibility
+    setShowRecipeCard(false);
+    setShowProductCard(false);
+    
     // Simulate TTFT (Time To First Token) with loading spinner
     setIsLoading(true);
     setDisplayedText('');
@@ -116,6 +122,14 @@ export function AIRecommendation({ recipes, userName, onRecipeClick }: AIRecomme
         } else {
           setIsTyping(false);
           clearInterval(typingInterval);
+          // Show recipe card after typing finishes
+          setTimeout(() => {
+            setShowRecipeCard(true);
+            // Show product card 500ms after recipe card
+            setTimeout(() => {
+              setShowProductCard(true);
+            }, 500);
+          }, 300);
         }
       }, 30);
 
@@ -126,6 +140,8 @@ export function AIRecommendation({ recipes, userName, onRecipeClick }: AIRecomme
   }, [fullText, showRecommendation, currentIndex]);
 
   const handleRefresh = () => {
+    setShowRecipeCard(false);
+    setShowProductCard(false);
     setCurrentIndex((prev) => (prev + 1) % AI_RECOMMENDATIONS.length);
     setShowRecommendation(true);
   };
@@ -191,12 +207,12 @@ export function AIRecommendation({ recipes, userName, onRecipeClick }: AIRecomme
             )}
           </div>
 
-          {/* Recipe + Product Cards */}
-          {!isTyping && !isLoading && recommendedRecipe && (
-            <div className="space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-500">
-              
-              {/* Recipe Card */}
-              <div>
+          {/* Recipe + Product Cards - appear sequentially */}
+          <div className="space-y-3">
+            
+            {/* Recipe Card - appears first */}
+            {showRecipeCard && recommendedRecipe && (
+              <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div className="flex items-center gap-2 text-[#A0522D] text-sm mb-2">
                   <Sparkles className="w-3 h-3" />
                   <span className="italic">{currentRec.reason}</span>
@@ -231,9 +247,11 @@ export function AIRecommendation({ recipes, userName, onRecipeClick }: AIRecomme
                   </div>
                 </div>
               </div>
+            )}
 
-              {/* Related Product Card */}
-              <div>
+            {/* Related Product Card - appears after recipe */}
+            {showProductCard && (
+              <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div className="flex items-center gap-2 text-[#A0522D] text-sm mb-2">
                   <ShoppingCart className="w-3 h-3" />
                   <span className="italic">{currentRec.productReason}</span>
@@ -286,8 +304,8 @@ export function AIRecommendation({ recipes, userName, onRecipeClick }: AIRecomme
                   </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </>
       )}
     </div>

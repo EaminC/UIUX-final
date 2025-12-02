@@ -250,7 +250,7 @@ export default function App() {
       setCurrentScreen('onboarding');
     } else {
       setHasCompletedOnboarding(true);
-      setCurrentScreen('menu');
+      setCurrentScreen('home');
     }
   };
 
@@ -278,7 +278,7 @@ export default function App() {
       setCurrentScreen('onboarding');
     } else {
       setHasCompletedOnboarding(true);
-      setCurrentScreen('menu');
+      setCurrentScreen('home');
     }
   };
 
@@ -298,7 +298,7 @@ export default function App() {
       setCurrentScreen('onboarding');
     } else {
       setHasCompletedOnboarding(true);
-      setCurrentScreen('menu');
+      setCurrentScreen('home');
     }
   };
 
@@ -318,18 +318,18 @@ export default function App() {
       setCurrentScreen('onboarding');
     } else {
       setHasCompletedOnboarding(true);
-      setCurrentScreen('menu');
+      setCurrentScreen('home');
     }
   };
 
   const handlePreferencesComplete = (preferences: string[]) => {
     setHasSelectedPreferences(true);
-    setCurrentScreen('menu');
+    setCurrentScreen('home');
   };
 
   const handlePreferencesSkip = () => {
     setHasSelectedPreferences(true);
-    setCurrentScreen('menu');
+    setCurrentScreen('home');
   };
 
   // Navigation handlers

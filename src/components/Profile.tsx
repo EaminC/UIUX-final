@@ -129,7 +129,7 @@ export function Profile({ user, recipes, onRecipeClick, onNavigateToDetails }: P
           <div className="flex items-center gap-4">
             {/* Current Reward - Steak (larger) */}
             <div className="flex flex-col items-center">
-              <div className="w-20 h-20 rounded-xl overflow-hidden border-3 border-[#228B22] shadow-lg">
+              <div className="w-24 h-24 rounded-xl overflow-hidden border-3 border-[#228B22] shadow-lg">
                 <img 
                   src="https://images.unsplash.com/photo-1600891964092-4316c288032e?w=200&q=80" 
                   alt="Grain-Fed Steak"
@@ -162,7 +162,7 @@ export function Profile({ user, recipes, onRecipeClick, onNavigateToDetails }: P
 
             {/* Next Reward - Salmon (smaller, locked) */}
             <div className="flex flex-col items-center">
-              <div className="w-16 h-16 rounded-xl overflow-hidden border-2 border-gray-300 shadow-md relative">
+              <div className="w-14 h-14 rounded-xl overflow-hidden border-2 border-gray-300 shadow-md relative">
                 <img 
                   src="https://images.unsplash.com/photo-1599084993091-1cb5c0721cc6?w=200&q=80" 
                   alt="Next: Salmon"
