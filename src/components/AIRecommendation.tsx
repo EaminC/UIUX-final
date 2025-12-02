@@ -35,6 +35,7 @@ const AI_RESPONSES = [
 export function AIRecommendation({ recipes, userName, onRecipeClick }: AIRecommendationProps) {
   const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [currentResponse, setCurrentResponse] = useState(0);
   const [showRecommendation, setShowRecommendation] = useState(false);
 
@@ -45,21 +46,29 @@ export function AIRecommendation({ recipes, userName, onRecipeClick }: AIRecomme
   useEffect(() => {
     if (!showRecommendation) return;
 
-    setIsTyping(true);
+    // Simulate TTFT (Time To First Token) with loading spinner
+    setIsLoading(true);
     setDisplayedText('');
-    let currentIndex = 0;
+    
+    const loadingTimeout = setTimeout(() => {
+      setIsLoading(false);
+      setIsTyping(true);
+      
+      let currentIndex = 0;
+      const typingInterval = setInterval(() => {
+        if (currentIndex <= fullText.length) {
+          setDisplayedText(fullText.slice(0, currentIndex));
+          currentIndex++;
+        } else {
+          setIsTyping(false);
+          clearInterval(typingInterval);
+        }
+      }, 30); // 30ms per character for smooth typing effect
 
-    const typingInterval = setInterval(() => {
-      if (currentIndex <= fullText.length) {
-        setDisplayedText(fullText.slice(0, currentIndex));
-        currentIndex++;
-      } else {
-        setIsTyping(false);
-        clearInterval(typingInterval);
-      }
-    }, 30); // 30ms per character for smooth typing effect
+      return () => clearInterval(typingInterval);
+    }, 800 + Math.random() * 700); // Random delay between 800-1500ms to simulate real AI
 
-    return () => clearInterval(typingInterval);
+    return () => clearTimeout(loadingTimeout);
   }, [fullText, showRecommendation, currentResponse]);
 
   const handleRefresh = () => {
@@ -91,9 +100,9 @@ export function AIRecommendation({ recipes, userName, onRecipeClick }: AIRecomme
             variant="ghost"
             size="sm"
             className="text-[#8B4513] hover:bg-[#FFE8D6]"
-            disabled={isTyping}
+            disabled={isTyping || isLoading}
           >
-            <RefreshCw className={`w-4 h-4 ${isTyping ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`w-4 h-4 ${(isTyping || isLoading) ? 'animate-spin' : ''}`} />
           </Button>
         )}
       </div>
@@ -113,16 +122,23 @@ export function AIRecommendation({ recipes, userName, onRecipeClick }: AIRecomme
         </div>
       ) : (
         <>
-          <div className="bg-white rounded-lg p-4 mb-3 min-h-[100px] border border-[#DEB887]">
-            <p className="text-[#8B4513] leading-relaxed">
-              {displayedText}
-              {isTyping && (
-                <span className="inline-block w-2 h-4 bg-[#8B4513] ml-1 animate-pulse" />
-              )}
-            </p>
+          <div className="bg-white rounded-lg p-4 mb-3 min-h-[100px] border border-[#DEB887] flex items-center">
+            {isLoading ? (
+              <div className="flex items-center gap-3 w-full justify-center">
+                <div className="w-5 h-5 border-2 border-[#8B4513] border-t-transparent rounded-full animate-spin" />
+                <span className="text-[#A0522D] text-sm">Analyzing your preferences...</span>
+              </div>
+            ) : (
+              <p className="text-[#8B4513] leading-relaxed">
+                {displayedText}
+                {isTyping && (
+                  <span className="inline-block w-2 h-4 bg-[#8B4513] ml-1 animate-pulse" />
+                )}
+              </p>
+            )}
           </div>
 
-          {!isTyping && recommendedRecipe && (
+          {!isTyping && !isLoading && recommendedRecipe && (
             <div className="space-y-2 animate-in fade-in slide-in-from-bottom-2 duration-500">
               <div className="flex items-center gap-2 text-[#A0522D] text-sm">
                 <Sparkles className="w-3 h-3" />
