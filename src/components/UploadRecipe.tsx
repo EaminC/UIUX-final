@@ -82,8 +82,8 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
   const [ingredients, setIngredients] = useState<string[]>(['']);
   const [steps, setSteps] = useState<string[]>(['']);
   const [showCelebration, setShowCelebration] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [generationProgress, setGenerationProgress] = useState(0);
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -135,13 +135,6 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
   const canProceedToStep3 = ingredients.some(i => i.trim());
   const canSubmit = steps.some(s => s.trim());
 
-  const handlePhotoProcessing = () => {
-    setIsProcessing(true);
-    setTimeout(() => {
-      setIsProcessing(false);
-    }, 2000);
-  };
-
   const handleSelectPresetPhoto = (index: number) => {
     setSelectedPresetIndex(index);
     const selectedRecipe = PRESET_FOOD_PHOTOS[index];
@@ -150,6 +143,23 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
     
     // Start AI generation after selecting photo
     setIsGenerating(true);
+    setGenerationProgress(0);
+    
+    // Simulate progressive AI analysis with multiple stages
+    const stages = [
+      { progress: 15, delay: 400 },
+      { progress: 35, delay: 800 },
+      { progress: 55, delay: 1200 },
+      { progress: 75, delay: 1800 },
+      { progress: 90, delay: 2400 },
+      { progress: 100, delay: 3000 },
+    ];
+    
+    stages.forEach(({ progress, delay }) => {
+      setTimeout(() => setGenerationProgress(progress), delay);
+    });
+    
+    // Complete after 3.5 seconds
     setTimeout(() => {
       // Auto-fill all fields based on selected photo
       setTitle(selectedRecipe.title);
@@ -159,8 +169,9 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
       setSteps(selectedRecipe.steps);
       
       setIsGenerating(false);
+      setGenerationProgress(0);
       setStep(4); // Skip to review step
-    }, 2000); // 2 seconds for AI analysis
+    }, 3500);
   };
 
   if (showCelebration) {
@@ -182,8 +193,14 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
     <div className="max-w-lg mx-auto min-h-screen bg-[#FFF8F0]">
       {/* Photo Selector Modal for Beta Mode */}
       {showPhotoSelector && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg w-full max-w-lg max-h-[80vh] overflow-hidden">
+        <div 
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-in fade-in duration-200"
+          onClick={() => setShowPhotoSelector(false)}
+        >
+          <div 
+            className="bg-white rounded-lg w-full max-w-lg max-h-[80vh] overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-4 duration-300"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="p-4 border-b border-[#DEB887] flex items-center justify-between">
               <h3 className="text-[#8B4513] font-semibold flex items-center gap-2">
                 <Sparkles className="w-5 h-5" />
@@ -206,11 +223,12 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
                     key={index}
                     onClick={() => handleSelectPresetPhoto(index)}
                     className="relative aspect-square rounded-lg overflow-hidden border-2 border-[#DEB887] hover:border-[#8B4513] transition-all hover:shadow-lg group"
+                    style={{ animationDelay: `${index * 50}ms` }}
                   >
                     <img 
                       src={preset.url} 
                       alt={preset.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-2">
                       <div className="text-white text-left">
@@ -228,13 +246,26 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
 
       {/* AI Generation Loading Modal */}
       {isGenerating && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-8 max-w-sm mx-4 text-center">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-in fade-in duration-200">
+          <div className="bg-white rounded-lg p-8 max-w-sm mx-4 text-center animate-in zoom-in-95 duration-300">
             <div className="w-16 h-16 border-4 border-[#8B4513] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <h3 className="text-[#8B4513] mb-2">AI is analyzing the photo...</h3>
-            <p className="text-[#A0522D] text-sm">
-              Identifying ingredients and generating recipe steps
+            <h3 className="text-[#8B4513] mb-2">
+              {generationProgress < 30 && "Analyzing image..."}
+              {generationProgress >= 30 && generationProgress < 60 && "Identifying ingredients..."}
+              {generationProgress >= 60 && generationProgress < 90 && "Generating recipe steps..."}
+              {generationProgress >= 90 && "Finalizing recipe..."}
+            </h3>
+            <p className="text-[#A0522D] text-sm mb-4">
+              AI is working its magic ✨
             </p>
+            {/* Progress bar */}
+            <div className="w-full bg-[#FFE8D6] rounded-full h-2 overflow-hidden">
+              <div 
+                className="bg-gradient-to-r from-[#8B4513] to-[#A0522D] h-full rounded-full transition-all duration-300 ease-out"
+                style={{ width: `${generationProgress}%` }}
+              />
+            </div>
+            <p className="text-[#A0522D] text-xs mt-2">{generationProgress}%</p>
           </div>
         </div>
       )}
@@ -442,23 +473,13 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
               </div>
             </div>
 
-            {isProcessing ? (
-              <div className="text-center py-8">
-                <div className="w-16 h-16 border-4 border-[#8B4513] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                <p className="text-[#8B4513]">Wait a minute, photo processing...</p>
-              </div>
-            ) : (
             <Button
-                onClick={() => {
-                  handlePhotoProcessing();
-                  setTimeout(() => setStep(2), 2000);
-                }}
+              onClick={() => setStep(2)}
               disabled={!canProceedToStep2}
               className="w-full bg-[#8B4513] hover:bg-[#A0522D] text-white"
             >
               Next: Add Ingredients
             </Button>
-            )}
           </div>
         )}
 
