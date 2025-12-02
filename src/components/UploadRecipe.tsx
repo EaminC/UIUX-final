@@ -721,7 +721,7 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
               )}
               <Button
                 onClick={handleSubmit}
-                className={`${useBetaMode ? 'w-full' : 'flex-1'} bg-gradient-to-r from-[#8B4513] to-[#A0522D] hover:from-[#A0522D] hover:to-[#8B4513] text-white`}
+                className={`${useBetaMode ? 'w-full' : 'flex-1'} bg-gradient-to-r from-[#22c55e] to-[#16a34a] hover:from-[#16a34a] hover:to-[#22c55e] text-white shadow-lg border-0`}
               >
                 <Sparkles className="w-4 h-4 mr-2" />
                 Submit Recipe
