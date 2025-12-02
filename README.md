@@ -116,10 +116,32 @@ This project is deployed on Vercel. To deploy your own instance:
 
 ## Prototype Versions
 
-- **v1**: Initial prototype with core features
-- **v2**: Current version with AI recommendations, fixed interactions, and enhanced UX
+### v0 - Figma Design
+**Link**: [Figma Design File](https://www.figma.com/design/ZhhpY5cO0lQ88KazwhOPIo/Untitled?node-id=0-1&m=dev)
 
-### Key Improvements from v1 to v2
+Initial design mockups created in Figma, showcasing the visual design and basic user flows.
+
+### v1 - Initial Code Implementation
+**Repository**: [UIUX-initial](https://github.com/EaminC/UIUX-initial)  
+**Git Tag**: [v1](https://github.com/EaminC/UIUX-final/tree/v1)
+
+First working prototype with core features implemented from Figma designs.
+
+### v2 - Enhanced Version (Current)
+**Repository**: [UIUX-final](https://github.com/EaminC/UIUX-final)  
+**Git Tag**: [v2](https://github.com/EaminC/UIUX-final/tree/v2)  
+**Live Demo**: [Vercel Deployment](https://uiux-final.vercel.app)
+
+Final version with AI recommendations, all critical fixes, and enhanced UX.
+
+### Design Evolution
+
+**v0 (Figma) → v1 (Code)**:
+- Translated Figma designs into working React components
+- Implemented basic navigation and user flows
+- Added core features: recipe browsing, upload, profile
+
+**v1 → v2 (Enhancements)**:
 - ✅ Added AI Recipe Recommendation feature with typewriter animation
 - ✅ Fixed calendar date picker functionality
 - ✅ Fixed star rating system with visual feedback

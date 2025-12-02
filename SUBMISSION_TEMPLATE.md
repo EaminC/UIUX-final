@@ -15,9 +15,16 @@
 
 ---
 
-### Prototype v1
-**GitHub Tag**: https://github.com/EaminC/UIUX-final/tree/v1  
-**Live Demo (v1)**: [Will be created after tagging]
+### Prototype v0 (Figma Design)
+**Figma Link**: https://www.figma.com/design/ZhhpY5cO0lQ88KazwhOPIo/Untitled?node-id=0-1&m=dev
+
+**Description**: Initial design mockups showcasing visual design and basic user flows.
+
+---
+
+### Prototype v1 (Initial Code Implementation)
+**GitHub Repository**: https://github.com/EaminC/UIUX-initial  
+**Also tagged in**: https://github.com/EaminC/UIUX-final/tree/v1
 
 **Key Features in v1**:
 - Home feed with recipe browsing
