@@ -9,7 +9,6 @@ interface ProfileProps {
   recipes: import('../App').Recipe[];
   onRecipeClick: (recipeId: string) => void;
   onNavigateToDetails?: (tab: 'recipes' | 'likes' | 'points') => void;
-  onNavigateToRewards?: () => void;
 }
 
 
@@ -42,7 +41,7 @@ const achievements = [
   },
 ];
 
-export function Profile({ user, recipes, onRecipeClick, onNavigateToDetails, onNavigateToRewards }: ProfileProps) {
+export function Profile({ user, recipes, onRecipeClick, onNavigateToDetails }: ProfileProps) {
   const pointsToNextLevel = 50; // Points needed for next level
   const currentLevelPoints = user.points % pointsToNextLevel;
   const progressPercentage = (currentLevelPoints / pointsToNextLevel) * 100;
@@ -120,63 +119,64 @@ export function Profile({ user, recipes, onRecipeClick, onNavigateToDetails, onN
           </div>
         </div>
 
-        {/* Reward Progress - Clickable to enter Rewards System */}
-        <button
-          onClick={onNavigateToRewards}
-          className="w-full text-left bg-gradient-to-br from-[#5D3A1A] via-[#8B4513] to-[#A0522D] rounded-xl p-5 border-2 border-[#4A2F15] md:p-6 md:rounded-xl shadow-xl hover:shadow-2xl transition-all hover:scale-[1.02]"
-        >
-          <div className="flex items-start gap-4">
-            {/* Current Reward Image */}
-            <div className="w-16 h-16 rounded-lg overflow-hidden border-3 border-[#FFD700] shadow-lg flex-shrink-0 ring-2 ring-[#FFD700]/50">
-              <img 
-                src="https://images.unsplash.com/photo-1600891964092-4316c288032e?w=200&q=80" 
-                alt="Grain-Fed Steak"
-                className="w-full h-full object-cover"
-              />
+        {/* Reward Progress - Display Only */}
+        <div className="w-full bg-white rounded-xl p-5 border-2 border-[#8B4513] md:p-6 shadow-lg">
+          <div className="flex items-center gap-2 mb-4">
+            <Trophy className="w-6 h-6 text-[#8B4513]" />
+            <h3 className="text-[#8B4513] font-bold text-lg">My Rewards</h3>
+          </div>
+          
+          <div className="flex items-center gap-4">
+            {/* Current Reward - Steak (larger) */}
+            <div className="flex flex-col items-center">
+              <div className="w-20 h-20 rounded-xl overflow-hidden border-3 border-[#228B22] shadow-lg">
+                <img 
+                  src="https://images.unsplash.com/photo-1600891964092-4316c288032e?w=200&q=80" 
+                  alt="Grain-Fed Steak"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <span className="text-[#228B22] text-xs mt-2 font-bold">✓ Earned</span>
+              <span className="text-[#8B4513] text-xs font-medium">Ribeye Steak</span>
             </div>
             
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <Star className="w-4 h-4 text-[#FFD700] fill-[#FFD700]" />
-                <Star className="w-4 h-4 text-[#FFD700] fill-[#FFD700]" />
-                <span className="text-white/90 text-sm ml-1 font-medium">Level 2</span>
+            {/* Progress Info */}
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-2">
+                <Star className="w-5 h-5 text-[#FFD700] fill-[#FFD700]" />
+                <Star className="w-5 h-5 text-[#FFD700] fill-[#FFD700]" />
+                <span className="text-[#8B4513] font-bold ml-1">Level 2</span>
               </div>
-              <h3 className="text-white font-bold text-lg">Aspiring Chef</h3>
-              <p className="text-[#FFE8D6] text-sm">{user.points} / 150 points</p>
+              <p className="text-[#8B4513] font-semibold">Aspiring Chef</p>
+              <p className="text-[#A0522D] text-sm mb-2">{user.points} / 150 points</p>
               
               {/* Progress Bar */}
-              <div className="mt-2 h-3 bg-black/30 rounded-full overflow-hidden border border-white/20">
+              <div className="h-3 bg-[#DEB887] rounded-full overflow-hidden">
                 <div 
-                  className="h-full bg-gradient-to-r from-[#FFD700] to-[#FFA500] rounded-full transition-all"
+                  className="h-full bg-gradient-to-r from-[#8B4513] to-[#A0522D] rounded-full transition-all"
                   style={{ width: `${Math.min((user.points / 150) * 100, 100)}%` }}
                 />
               </div>
+              <p className="text-[#A0522D] text-xs mt-1">{150 - user.points} pts to next reward</p>
             </div>
 
-            {/* Next Reward Preview */}
+            {/* Next Reward - Salmon (smaller, locked) */}
             <div className="flex flex-col items-center">
-              <div className="w-14 h-14 rounded-lg overflow-hidden border-2 border-white/40 shadow-md relative">
+              <div className="w-16 h-16 rounded-xl overflow-hidden border-2 border-gray-300 shadow-md relative">
                 <img 
                   src="https://images.unsplash.com/photo-1599084993091-1cb5c0721cc6?w=200&q=80" 
                   alt="Next: Salmon"
-                  className="w-full h-full object-cover brightness-75"
+                  className="w-full h-full object-cover grayscale opacity-60"
                 />
-                <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                  <span className="text-white text-lg">🔒</span>
+                <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                  <span className="text-xl">🔒</span>
                 </div>
               </div>
-              <span className="text-[#FFE8D6] text-xs mt-1 font-medium">Next</span>
+              <span className="text-gray-400 text-xs mt-2 font-medium">Next</span>
+              <span className="text-gray-500 text-xs">Salmon</span>
             </div>
           </div>
-          
-          <div className="flex items-center justify-between mt-4 pt-3 border-t border-white/20">
-            <span className="text-[#FFE8D6] text-sm font-medium">🎁 Tap to view all rewards</span>
-            <div className="flex items-center gap-1 text-[#FFD700]">
-              <Trophy className="w-5 h-5" />
-              <span className="text-sm font-bold">→</span>
-            </div>
-          </div>
-        </button>
+        </div>
 
         {/* Achievements */}
         <div>

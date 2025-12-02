@@ -19,7 +19,6 @@ import { RecipeDetail } from './components/RecipeDetail';
 import { ProfileDetails } from './components/ProfileDetails';
 import { Comments } from './components/Comments';
 import { Settings } from './components/Settings';
-import { RewardsSystem } from './components/RewardsSystem';
 import { Navigation } from './components/Navigation';
 import xiaolongbaoImage from './assets/小笼包.jpeg';
 import hongshaoRouImage from './assets/红烧肉.jpeg';
@@ -46,8 +45,7 @@ export type Screen =
   | 'photo-library'
   | 'recipe-detail'
   | 'profile-details'
-  | 'settings'
-  | 'rewards';
+  | 'settings';
 
 export interface ProductLink {
   id: string;
@@ -706,13 +704,6 @@ export default function App() {
             setProfileDetailTab(tab);
             setCurrentScreen('profile-details');
           }}
-          onNavigateToRewards={() => setCurrentScreen('rewards')}
-        />
-      )}
-      {currentScreen === 'rewards' && (
-        <RewardsSystem
-          user={user}
-          onBack={() => setCurrentScreen('profile')}
         />
       )}
       {currentScreen === 'search' && (

@@ -101,8 +101,8 @@ export function AIRecommendation({ recipes, userName, onRecipeClick }: AIRecomme
   const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  // Start with a random response to mix recipes and products
-  const [currentResponse, setCurrentResponse] = useState(() => Math.floor(Math.random() * AI_RESPONSES.length));
+  // Start with index 1 (product recommendation) to show product first, then alternate
+  const [currentResponse, setCurrentResponse] = useState(1);
   const [showRecommendation, setShowRecommendation] = useState(false);
 
   const currentAIResponse = AI_RESPONSES[currentResponse];
@@ -179,7 +179,7 @@ export function AIRecommendation({ recipes, userName, onRecipeClick }: AIRecomme
       {!showRecommendation ? (
         <div className="text-center py-6">
           <p className="text-[#A0522D] mb-4">
-            Get personalized recipe recommendations based on your preferences and cooking history
+            Get personalized recipes & product deals based on your preferences and cooking history
           </p>
           <Button
             onClick={handleGetRecommendation}
