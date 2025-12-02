@@ -472,60 +472,65 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
               )}
             </div>
 
-            <div>
-              <Label htmlFor="title" className="text-[#8B4513]">
-                Recipe Title
-              </Label>
-              <Input
-                id="title"
-                placeholder="e.g., Grandma's Dumplings"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="mt-1 border-[#DEB887] focus:border-[#8B4513]"
-              />
-            </div>
+            {/* Only show manual input fields for non-Beta mode */}
+            {!useBetaMode && (
+              <>
+                <div>
+                  <Label htmlFor="title" className="text-[#8B4513]">
+                    Recipe Title
+                  </Label>
+                  <Input
+                    id="title"
+                    placeholder="e.g., Grandma's Dumplings"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    className="mt-1 border-[#DEB887] focus:border-[#8B4513]"
+                  />
+                </div>
 
-            <div>
-              <Label htmlFor="cuisine" className="text-[#8B4513]">
-                Cuisine Type
-              </Label>
-              <Input
-                id="cuisine"
-                placeholder="e.g., Chinese, Indian, Mexican"
-                value={cuisine}
-                onChange={(e) => setCuisine(e.target.value)}
-                className="mt-1 border-[#DEB887] focus:border-[#8B4513]"
-              />
-            </div>
+                <div>
+                  <Label htmlFor="cuisine" className="text-[#8B4513]">
+                    Cuisine Type
+                  </Label>
+                  <Input
+                    id="cuisine"
+                    placeholder="e.g., Chinese, Indian, Mexican"
+                    value={cuisine}
+                    onChange={(e) => setCuisine(e.target.value)}
+                    className="mt-1 border-[#DEB887] focus:border-[#8B4513]"
+                  />
+                </div>
 
-            <div>
-              <Label className="text-[#8B4513] mb-2 block">
-                What's cooking good looking?
-              </Label>
-              <div className="grid grid-cols-3 gap-3">
-                {(['breakfast', 'lunch', 'dinner'] as const).map((type) => (
-                  <button
-                    key={type}
-                    onClick={() => setMealType(type)}
-                    className={`p-4 rounded-lg border-2 transition-all ${
-                      mealType === type
-                        ? 'bg-[#8B4513] text-white border-[#8B4513]'
-                        : 'bg-white text-[#8B4513] border-[#DEB887] hover:border-[#8B4513]'
-                    }`}
-                  >
-                    {type.charAt(0).toUpperCase() + type.slice(1)}
-                  </button>
-                ))}
-              </div>
-            </div>
+                <div>
+                  <Label className="text-[#8B4513] mb-2 block">
+                    What's cooking good looking?
+                  </Label>
+                  <div className="grid grid-cols-3 gap-3">
+                    {(['breakfast', 'lunch', 'dinner'] as const).map((type) => (
+                      <button
+                        key={type}
+                        onClick={() => setMealType(type)}
+                        className={`p-4 rounded-lg border-2 transition-all ${
+                          mealType === type
+                            ? 'bg-[#8B4513] text-white border-[#8B4513]'
+                            : 'bg-white text-[#8B4513] border-[#DEB887] hover:border-[#8B4513]'
+                        }`}
+                      >
+                        {type.charAt(0).toUpperCase() + type.slice(1)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
-            <Button
-              onClick={() => setStep(2)}
-              disabled={!canProceedToStep2}
-              className="w-full bg-[#8B4513] hover:bg-[#A0522D] text-white"
-            >
-              Next: Add Ingredients
-            </Button>
+                <Button
+                  onClick={() => setStep(2)}
+                  disabled={!canProceedToStep2}
+                  className="w-full bg-[#8B4513] hover:bg-[#A0522D] text-white"
+                >
+                  Next: Add Ingredients
+                </Button>
+              </>
+            )}
           </div>
         )}
 
