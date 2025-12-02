@@ -10,10 +10,10 @@ interface UploadRecipeProps {
   onCancel: () => void;
 }
 
-// Preset food photos for Beta AI generation
+// Preset food photos for Beta AI generation - using accurate Unsplash photos
 const PRESET_FOOD_PHOTOS = [
   {
-    url: 'https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=800&q=80',
+    url: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=800&q=80',
     title: 'Japanese Ramen',
     cuisine: 'Japanese',
     mealType: 'lunch' as const,
@@ -21,7 +21,7 @@ const PRESET_FOOD_PHOTOS = [
     steps: ['Prepare rich chicken broth with miso paste', 'Cook ramen noodles according to package', 'Slice and sear pork belly until crispy', 'Soft-boil eggs for 6-7 minutes', 'Assemble bowl with noodles, broth, and toppings', 'Garnish with green onions and nori']
   },
   {
-    url: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&q=80',
+    url: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=800&q=80',
     title: 'Margherita Pizza',
     cuisine: 'Italian',
     mealType: 'dinner' as const,
@@ -29,7 +29,7 @@ const PRESET_FOOD_PHOTOS = [
     steps: ['Stretch pizza dough into a round shape', 'Spread crushed tomatoes evenly', 'Add torn mozzarella pieces', 'Drizzle with olive oil', 'Bake at 450°F for 12-15 minutes', 'Top with fresh basil leaves']
   },
   {
-    url: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&q=80',
+    url: 'https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=800&q=80',
     title: 'Thai Green Curry',
     cuisine: 'Thai',
     mealType: 'dinner' as const,
@@ -37,7 +37,7 @@ const PRESET_FOOD_PHOTOS = [
     steps: ['Heat coconut cream and fry curry paste until fragrant', 'Add chicken and cook until white', 'Pour in remaining coconut milk', 'Add vegetables and simmer', 'Season with fish sauce and palm sugar', 'Garnish with Thai basil']
   },
   {
-    url: 'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=800&q=80',
+    url: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=800&q=80',
     title: 'French Croissant',
     cuisine: 'French',
     mealType: 'breakfast' as const,
@@ -45,7 +45,7 @@ const PRESET_FOOD_PHOTOS = [
     steps: ['Make dough and let it rest overnight', 'Laminate dough with butter layers', 'Fold and roll multiple times', 'Cut into triangles and roll into crescents', 'Proof until doubled in size', 'Brush with egg wash and bake at 375°F']
   },
   {
-    url: 'https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=800&q=80',
+    url: 'https://images.unsplash.com/photo-1553163147-622ab57be1c7?w=800&q=80',
     title: 'Korean Bibimbap',
     cuisine: 'Korean',
     mealType: 'lunch' as const,
@@ -53,15 +53,15 @@ const PRESET_FOOD_PHOTOS = [
     steps: ['Cook rice and keep warm', 'Marinate and cook beef bulgogi', 'Blanch and season vegetables separately', 'Arrange rice in bowl', 'Top with vegetables and beef in sections', 'Add fried egg and gochujang sauce']
   },
   {
-    url: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80',
-    title: 'Mediterranean Salad',
+    url: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=800&q=80',
+    title: 'Fresh Salad Bowl',
     cuisine: 'Mediterranean',
     mealType: 'lunch' as const,
     ingredients: ['Mixed greens', 'Cherry tomatoes', 'Cucumber', 'Feta cheese', 'Kalamata olives', 'Red onion', 'Olive oil', 'Lemon juice'],
     steps: ['Wash and dry all vegetables', 'Chop vegetables into bite-sized pieces', 'Crumble feta cheese', 'Combine all ingredients in a large bowl', 'Whisk olive oil and lemon juice', 'Toss salad with dressing just before serving']
   },
   {
-    url: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&q=80',
+    url: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&q=80',
     title: 'Classic Burger',
     cuisine: 'American',
     mealType: 'dinner' as const,
