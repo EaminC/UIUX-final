@@ -113,10 +113,10 @@
 
 ## 🔗 重要链接
 
-### GitHub
-- **仓库**: https://github.com/EaminC/UIUX-final
-- **v1 标签**: https://github.com/EaminC/UIUX-final/tree/v1
-- **v2 标签**: https://github.com/EaminC/UIUX-final/tree/v2
+### 三个版本
+- **v0 (Figma 设计)**: https://www.figma.com/design/ZhhpY5cO0lQ88KazwhOPIo/Untitled?node-id=0-1&m=dev
+- **v1 (初始实现)**: https://github.com/EaminC/UIUX-initial
+- **v2 (最终版本)**: https://github.com/EaminC/UIUX-final
 
 ### Vercel 部署
 - **Live Demo**: https://uiux-final.vercel.app （或您的实际 URL）
