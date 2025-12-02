@@ -32,10 +32,10 @@ export function Navigation({ currentScreen, onNavigate }: NavigationProps) {
                 className="flex flex-col items-center justify-center flex-1 h-full transition-all md:flex-1 md:w-full md:py-2 md:px-1 md:rounded-lg md:hover:bg-[#FFE8D6] md:mb-1 -mt-4 md:mt-0"
                 title={item.label}
               >
-                <div className={`w-14 h-14 rounded-full flex items-center justify-center shadow-lg border-4 border-white transition-transform hover:scale-110 ${
+                <div className={`w-14 h-14 rounded-full flex items-center justify-center shadow-lg border-4 border-[#DEB887] transition-transform hover:scale-110 ${
                   isActive 
-                    ? 'bg-[#8B4513]' 
-                    : 'bg-gradient-to-br from-[#8B4513] to-[#A0522D]'
+                    ? 'bg-[#6B3410]' 
+                    : 'bg-[#8B4513]'
                 }`}>
                   <Icon className="w-7 h-7 text-white stroke-[3]" />
                 </div>

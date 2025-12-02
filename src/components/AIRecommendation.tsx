@@ -182,7 +182,7 @@ export function AIRecommendation({ recipes, userName, onRecipeClick }: AIRecomme
           </p>
           <Button
             onClick={handleGetRecommendation}
-            className="bg-gradient-to-r from-[#8B4513] to-[#A0522D] hover:from-[#A0522D] hover:to-[#8B4513] text-white"
+            className="bg-[#8B4513] hover:bg-[#6B3410] text-white shadow-md"
           >
             <Sparkles className="w-4 h-4 mr-2" />
             Get AI Recommendation
