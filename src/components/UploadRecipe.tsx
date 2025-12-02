@@ -135,28 +135,30 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
   const canProceedToStep3 = ingredients.some(i => i.trim());
   const canSubmit = steps.some(s => s.trim());
 
-  // AI generation animation helper
+  // AI generation animation helper - slower for more realistic feel
   const runAIGeneration = (photoUrl: string, recipe: typeof PRESET_FOOD_PHOTOS[0]) => {
     setPhoto(photoUrl);
     setShowPhotoSelector(false);
     setIsGenerating(true);
     setGenerationProgress(0);
     
-    // Simulate progressive AI analysis with multiple stages
+    // Simulate progressive AI analysis with multiple stages (6 seconds total)
     const stages = [
-      { progress: 15, delay: 400 },
-      { progress: 35, delay: 800 },
-      { progress: 55, delay: 1200 },
-      { progress: 75, delay: 1800 },
-      { progress: 90, delay: 2400 },
-      { progress: 100, delay: 3000 },
+      { progress: 10, delay: 600 },
+      { progress: 25, delay: 1400 },
+      { progress: 40, delay: 2200 },
+      { progress: 55, delay: 3000 },
+      { progress: 70, delay: 3800 },
+      { progress: 85, delay: 4600 },
+      { progress: 95, delay: 5400 },
+      { progress: 100, delay: 5800 },
     ];
     
     stages.forEach(({ progress, delay }) => {
       setTimeout(() => setGenerationProgress(progress), delay);
     });
     
-    // Complete after 3.5 seconds
+    // Complete after 6 seconds
     setTimeout(() => {
       // Auto-fill all fields based on recipe
       setTitle(recipe.title);
@@ -168,7 +170,7 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
       setIsGenerating(false);
       setGenerationProgress(0);
       setStep(4); // Skip directly to review step (no manual input needed)
-    }, 3500);
+    }, 6000);
   };
 
   const handleSelectPresetPhoto = (index: number) => {
@@ -726,7 +728,8 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
               )}
               <Button
                 onClick={handleSubmit}
-                className={`${useBetaMode ? 'w-full' : 'flex-1'} bg-gradient-to-r from-[#22c55e] to-[#16a34a] hover:from-[#16a34a] hover:to-[#22c55e] text-white shadow-lg border-0`}
+                className={`${useBetaMode ? 'w-full' : 'flex-1'} !bg-[#22c55e] hover:!bg-[#16a34a] text-white shadow-lg font-semibold py-3`}
+                style={{ backgroundColor: '#22c55e' }}
               >
                 <Sparkles className="w-4 h-4 mr-2" />
                 Submit Recipe
