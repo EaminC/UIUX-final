@@ -688,13 +688,10 @@ export default function App() {
       {currentScreen === 'store' && (
         <IngredientStore 
           onStoreClick={handleStoreClick}
-          onViewRecipes={(recipeIds) => {
-            // Find the first matching recipe and show it
-            const matchingRecipe = recipes.find(r => recipeIds.includes(r.id));
-            if (matchingRecipe) {
-              setSelectedRecipe(matchingRecipe);
-              setCurrentScreen('recipe-detail');
-            }
+          recipes={recipes}
+          onRecipeClick={(recipe) => {
+            setSelectedRecipe(recipe);
+            setCurrentScreen('recipe-detail');
           }}
         />
       )}

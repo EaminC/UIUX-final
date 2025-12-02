@@ -1,6 +1,8 @@
-import { ExternalLink, MapPin, Tag, ChefHat } from 'lucide-react';
+import { useState } from 'react';
+import { ExternalLink, MapPin, Tag, ChefHat, ChevronDown, ChevronUp } from 'lucide-react';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
+import type { Recipe } from '../App';
 
 interface Product {
   id: string;
@@ -57,10 +59,21 @@ const nearbyStores = [
 
 interface IngredientStoreProps {
   onStoreClick?: (storeName: string, address: string) => void;
-  onViewRecipes?: (recipeIds: string[]) => void;
+  onRecipeClick?: (recipe: Recipe) => void;
+  recipes?: Recipe[];
 }
 
-export function IngredientStore({ onStoreClick, onViewRecipes }: IngredientStoreProps) {
+export function IngredientStore({ onStoreClick, onRecipeClick, recipes = [] }: IngredientStoreProps) {
+  const [expandedProductId, setExpandedProductId] = useState<string | null>(null);
+
+  const toggleExpand = (productId: string) => {
+    setExpandedProductId(expandedProductId === productId ? null : productId);
+  };
+
+  const getRelatedRecipes = (recipeIds: string[]) => {
+    return recipes.filter(r => recipeIds.includes(r.id));
+  };
+
   return (
     <div className="max-w-lg mx-auto md:max-w-none md:w-full">
       {/* Header */}
@@ -157,18 +170,47 @@ export function IngredientStore({ onStoreClick, onViewRecipes }: IngredientStore
                     View Deal
                   </Button>
                   {product.relatedRecipeIds && product.relatedRecipeIds.length > 0 && (
-                    <Button
-                      variant="outline"
-                      className="w-full border-[#8B4513] text-[#8B4513] hover:bg-[#FFE8D6]"
-                      onClick={() => {
-                        if (onViewRecipes) {
-                          onViewRecipes(product.relatedRecipeIds!);
-                        }
-                      }}
-                    >
-                      <ChefHat className="w-4 h-4 mr-2" />
-                      View {product.relatedRecipeIds.length} Recipe{product.relatedRecipeIds.length > 1 ? 's' : ''}
-                    </Button>
+                    <>
+                      <Button
+                        variant="outline"
+                        className="w-full border-[#8B4513] text-[#8B4513] hover:bg-[#FFE8D6]"
+                        onClick={() => toggleExpand(product.id)}
+                      >
+                        <ChefHat className="w-4 h-4 mr-2" />
+                        {product.relatedRecipeIds.length} Recipe{product.relatedRecipeIds.length > 1 ? 's' : ''}
+                        {expandedProductId === product.id ? (
+                          <ChevronUp className="w-4 h-4 ml-auto" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4 ml-auto" />
+                        )}
+                      </Button>
+                      
+                      {/* Expandable Recipe List */}
+                      {expandedProductId === product.id && (
+                        <div className="mt-2 space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                          {getRelatedRecipes(product.relatedRecipeIds).map((recipe) => (
+                            <div
+                              key={recipe.id}
+                              onClick={() => onRecipeClick?.(recipe)}
+                              className="flex items-center gap-3 p-2 bg-[#FFF8F0] rounded-lg border border-[#DEB887] hover:border-[#8B4513] cursor-pointer transition-all hover:shadow-sm"
+                            >
+                              <img
+                                src={recipe.image}
+                                alt={recipe.title}
+                                className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+                              />
+                              <div className="flex-1 min-w-0">
+                                <p className="text-[#8B4513] font-medium text-sm truncate">{recipe.title}</p>
+                                <p className="text-[#A0522D] text-xs">{recipe.cuisine}</p>
+                              </div>
+                            </div>
+                          ))}
+                          {getRelatedRecipes(product.relatedRecipeIds).length === 0 && (
+                            <p className="text-[#A0522D] text-sm text-center py-2">No recipes found</p>
+                          )}
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
               </div>
