@@ -142,10 +142,10 @@ export function Profile({
           </div>
 
           <div className="flex items-center gap-4">
-            {/* Current Reward - Steak (larger) */}
+            {/* Current Reward - Steak */}
             <div className="flex flex-col items-center">
               <div
-                className="rounded-xl overflow-hidden border-3 border-[#228B22] shadow-lg"
+                className="rounded-xl overflow-hidden border border-black shadow-md"
                 style={{ width: "80px", height: "80px" }}
               >
                 <img
@@ -188,20 +188,17 @@ export function Profile({
               </p>
             </div>
 
-            {/* Next Reward - Salmon (smaller, locked) */}
+            {/* Next Reward - Salmon (locked) */}
             <div className="flex flex-col items-center">
               <div
-                className="rounded-xl overflow-hidden border-2 border-gray-300 shadow-md relative"
+                className="rounded-xl overflow-hidden border border-black shadow-md relative"
                 style={{ width: "80px", height: "80px" }}
               >
                 <img
                   src="https://images.unsplash.com/photo-1599084993091-1cb5c0721cc6?w=200&q=80"
                   alt="Next: Salmon"
-                  className="w-full h-full object-cover grayscale opacity-60"
+                  className="w-full h-full object-cover grayscale opacity-50"
                 />
-                <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                  <span className="text-xl">🔒</span>
-                </div>
               </div>
               <span className="text-gray-400 text-xs mt-2 font-medium">
                 Next
