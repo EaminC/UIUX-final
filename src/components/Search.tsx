@@ -42,15 +42,14 @@ export function Search({ recipes, onLike, onBack, onRecipeClick, onComment, onSh
           <button onClick={onBack} className="text-[#A0522D]">
             <X className="w-6 h-6" />
           </button>
-          <div className="flex-1 relative">
+          <div className="flex-1">
             <Input
               type="text"
               placeholder="Search recipes, ingredients, cuisines..."
               value={searchQuery}
               onChange={(e) => handleSearch(e.target.value)}
-              className="pr-10 border-[#DEB887] focus:border-[#8B4513]"
+              className="border-[#DEB887] focus:border-[#8B4513]"
             />
-            <SearchIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#A0522D]" />
           </div>
         </div>
       </header>
