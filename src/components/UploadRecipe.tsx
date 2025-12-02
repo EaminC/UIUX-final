@@ -191,85 +191,6 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
 
   return (
     <div className="max-w-lg mx-auto min-h-screen bg-[#FFF8F0]">
-      {/* Photo Selector Modal for Beta Mode */}
-      {showPhotoSelector && (
-        <div 
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-in fade-in duration-200"
-          onClick={() => setShowPhotoSelector(false)}
-        >
-          <div 
-            className="bg-white rounded-lg w-full max-w-lg max-h-[80vh] overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-4 duration-300"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="p-4 border-b border-[#DEB887] flex items-center justify-between">
-              <h3 className="text-[#8B4513] font-semibold flex items-center gap-2">
-                <Sparkles className="w-5 h-5" />
-                Select a Dish
-              </h3>
-              <button 
-                onClick={() => setShowPhotoSelector(false)}
-                className="text-[#A0522D] hover:text-[#8B4513]"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="p-4 overflow-y-auto max-h-[60vh]">
-              <p className="text-[#A0522D] text-sm mb-4">
-                Choose a dish and AI will generate the complete recipe for you
-              </p>
-              <div className="grid grid-cols-2 gap-3">
-                {PRESET_FOOD_PHOTOS.map((preset, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handleSelectPresetPhoto(index)}
-                    className="relative aspect-square rounded-lg overflow-hidden border-2 border-[#DEB887] hover:border-[#8B4513] transition-all hover:shadow-lg group"
-                    style={{ animationDelay: `${index * 50}ms` }}
-                  >
-                    <img 
-                      src={preset.url} 
-                      alt={preset.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-2">
-                      <div className="text-white text-left">
-                        <div className="font-semibold text-sm">{preset.title}</div>
-                        <div className="text-xs opacity-80">{preset.cuisine}</div>
-                      </div>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* AI Generation Loading Modal */}
-      {isGenerating && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-in fade-in duration-200">
-          <div className="bg-white rounded-lg p-8 max-w-sm mx-4 text-center animate-in zoom-in-95 duration-300">
-            <div className="w-16 h-16 border-4 border-[#8B4513] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <h3 className="text-[#8B4513] mb-2">
-              {generationProgress < 30 && "Analyzing image..."}
-              {generationProgress >= 30 && generationProgress < 60 && "Identifying ingredients..."}
-              {generationProgress >= 60 && generationProgress < 90 && "Generating recipe steps..."}
-              {generationProgress >= 90 && "Finalizing recipe..."}
-            </h3>
-            <p className="text-[#A0522D] text-sm mb-4">
-              AI is working its magic ✨
-            </p>
-            {/* Progress bar */}
-            <div className="w-full bg-[#FFE8D6] rounded-full h-2 overflow-hidden">
-              <div 
-                className="bg-gradient-to-r from-[#8B4513] to-[#A0522D] h-full rounded-full transition-all duration-300 ease-out"
-                style={{ width: `${generationProgress}%` }}
-              />
-            </div>
-            <p className="text-[#A0522D] text-xs mt-2">{generationProgress}%</p>
-          </div>
-        </div>
-      )}
-
       {/* Header */}
       <header className="bg-white border-b border-[#DEB887] px-4 py-4 sticky top-0 z-10">
         <div className="flex items-center justify-between">
@@ -378,7 +299,29 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
                 )}
               </h3>
               
-              {photo ? (
+              {/* AI Generation Loading - inline */}
+              {isGenerating && (
+                <div className="bg-white rounded-lg p-6 border-2 border-[#8B4513] text-center">
+                  <div className="w-12 h-12 border-4 border-[#8B4513] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+                  <h4 className="text-[#8B4513] mb-1 text-sm font-semibold">
+                    {generationProgress < 30 && "Analyzing image..."}
+                    {generationProgress >= 30 && generationProgress < 60 && "Identifying ingredients..."}
+                    {generationProgress >= 60 && generationProgress < 90 && "Generating recipe steps..."}
+                    {generationProgress >= 90 && "Finalizing recipe..."}
+                  </h4>
+                  <p className="text-[#A0522D] text-xs mb-3">AI is working its magic ✨</p>
+                  <div className="w-full bg-[#FFE8D6] rounded-full h-2 overflow-hidden">
+                    <div 
+                      className="bg-gradient-to-r from-[#8B4513] to-[#A0522D] h-full rounded-full transition-all duration-300 ease-out"
+                      style={{ width: `${generationProgress}%` }}
+                    />
+                  </div>
+                  <p className="text-[#A0522D] text-xs mt-1">{generationProgress}%</p>
+                </div>
+              )}
+
+              {/* Photo display or selector */}
+              {!isGenerating && photo ? (
                 <div className="relative aspect-square rounded-lg overflow-hidden">
                   <img src={photo} alt="Recipe" className="w-full h-full object-cover" />
                   {useBetaMode && (
@@ -397,21 +340,66 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
                     <X className="w-5 h-5 text-[#8B4513]" />
                   </button>
                 </div>
-              ) : useBetaMode ? (
-                <button
-                  onClick={() => setShowPhotoSelector(true)}
-                  className="flex flex-col items-center justify-center aspect-square border-2 border-dashed border-[#8B4513] rounded-lg cursor-pointer hover:bg-[#FFE8D6] transition-colors bg-gradient-to-br from-[#FFF8F0] to-[#FFE8D6] w-full"
-                >
-                  <div className="w-16 h-16 bg-gradient-to-br from-[#8B4513] to-[#A0522D] rounded-full flex items-center justify-center mb-4">
-                    <Sparkles className="w-8 h-8 text-white" />
-                  </div>
-                  <span className="text-[#8B4513] mb-2 font-semibold">Choose from Photo Library</span>
-                  <span className="text-[#A0522D] text-sm">Select a dish for AI to analyze</span>
-                  <span className="text-[#8B4513] text-xs mt-2 bg-[#8B4513]/10 px-3 py-1 rounded-full">
-                    7 preset dishes available
-                  </span>
-                </button>
-              ) : (
+              ) : !isGenerating && useBetaMode ? (
+                <div className="space-y-3">
+                  {/* Collapsed state - click to expand */}
+                  {!showPhotoSelector ? (
+                    <button
+                      onClick={() => setShowPhotoSelector(true)}
+                      className="flex items-center justify-between w-full p-4 bg-gradient-to-r from-[#FFE8D6] to-[#FFDDB8] border-2 border-[#8B4513] rounded-lg hover:shadow-md transition-all"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-gradient-to-br from-[#8B4513] to-[#A0522D] rounded-full flex items-center justify-center">
+                          <Sparkles className="w-5 h-5 text-white" />
+                        </div>
+                        <div className="text-left">
+                          <span className="text-[#8B4513] font-semibold block">Choose from Photo Library</span>
+                          <span className="text-[#A0522D] text-xs">7 preset dishes available</span>
+                        </div>
+                      </div>
+                      <div className="text-[#8B4513]">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </div>
+                    </button>
+                  ) : (
+                    /* Expanded state - show photo grid */
+                    <div className="bg-white border-2 border-[#8B4513] rounded-lg overflow-hidden">
+                      <button
+                        onClick={() => setShowPhotoSelector(false)}
+                        className="flex items-center justify-between w-full p-3 bg-gradient-to-r from-[#FFE8D6] to-[#FFDDB8] border-b border-[#DEB887]"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Sparkles className="w-4 h-4 text-[#8B4513]" />
+                          <span className="text-[#8B4513] font-semibold text-sm">Select a Dish</span>
+                        </div>
+                        <svg className="w-5 h-5 text-[#8B4513]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                        </svg>
+                      </button>
+                      <div className="p-3 grid grid-cols-3 gap-2 max-h-64 overflow-y-auto">
+                        {PRESET_FOOD_PHOTOS.map((preset, index) => (
+                          <button
+                            key={index}
+                            onClick={() => handleSelectPresetPhoto(index)}
+                            className="relative aspect-square rounded-lg overflow-hidden border-2 border-[#DEB887] hover:border-[#8B4513] transition-all hover:shadow-md group"
+                          >
+                            <img 
+                              src={preset.url} 
+                              alt={preset.title}
+                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-1">
+                              <span className="text-white text-xs font-medium leading-tight">{preset.title}</span>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : !isGenerating && (
                 <label className="flex flex-col items-center justify-center aspect-square border-2 border-dashed border-[#DEB887] rounded-lg cursor-pointer hover:border-[#8B4513] transition-colors bg-white">
                   <Camera className="w-16 h-16 text-[#A0522D] mb-4" />
                   <span className="text-[#8B4513] mb-2">Take or upload a photo</span>
