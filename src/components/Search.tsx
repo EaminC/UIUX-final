@@ -35,9 +35,9 @@ export function Search({ recipes, onLike, onBack, onRecipeClick, onComment, onSh
   };
 
   return (
-    <div className="max-w-lg mx-auto min-h-screen bg-[#FFF8F0] md:max-w-none md:w-full md:px-4 md:py-2">
+    <div className="max-w-lg mx-auto min-h-screen bg-[#FFF8F0] md:max-w-none md:w-full">
       {/* Header */}
-      <header className="bg-white border-b border-[#DEB887] px-4 py-4 sticky top-0 z-10">
+      <header className="bg-white border-b border-[#DEB887] px-4 py-4 sticky top-0 z-10 md:px-8 md:py-6 md:bg-gradient-to-r md:from-[#FFF8F0] md:to-white md:border-b-2">
         <div className="flex items-center gap-3">
           <button onClick={onBack} className="text-[#A0522D]">
             <X className="w-6 h-6" />
@@ -55,7 +55,7 @@ export function Search({ recipes, onLike, onBack, onRecipeClick, onComment, onSh
       </header>
 
       {/* Search Results */}
-      <div className="p-4 md:px-6 md:py-4">
+      <div className="p-4 md:px-8 md:py-6">
         {searchQuery && (
           <div className="mb-4 text-[#A0522D]">
             Found {filteredRecipes.length} result{filteredRecipes.length !== 1 ? 's' : ''}
@@ -70,7 +70,7 @@ export function Search({ recipes, onLike, onBack, onRecipeClick, onComment, onSh
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-4 lg:gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
             {filteredRecipes.map((recipe) => (
               <div
                 key={recipe.id}

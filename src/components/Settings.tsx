@@ -16,9 +16,9 @@ export function Settings({ userName, onBack, onLogout }: SettingsProps) {
   const [language, setLanguage] = useState('English');
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] md:max-w-none md:w-full md:px-4 md:py-2">
+    <div className="min-h-screen bg-[#FFF8F0] md:max-w-none md:w-full">
       {/* Header */}
-      <header className="bg-white border-b border-[#DEB887] px-4 py-4 sticky top-0 z-10">
+      <header className="bg-white border-b border-[#DEB887] px-4 py-4 sticky top-0 z-10 md:px-8 md:py-6 md:bg-gradient-to-r md:from-[#FFF8F0] md:to-white md:border-b-2">
         <div className="flex items-center gap-3">
           <button onClick={onBack} className="text-[#A0522D]">
             <ArrowLeft className="w-6 h-6" />
@@ -27,7 +27,7 @@ export function Settings({ userName, onBack, onLogout }: SettingsProps) {
         </div>
       </header>
 
-      <div className="p-4 space-y-6 md:px-6 md:py-4 md:max-w-2xl md:mx-auto">
+      <div className="p-4 space-y-6 md:px-8 md:py-6 md:space-y-8 md:max-w-2xl md:mx-auto">
         {/* User Info Section */}
         <div className="bg-white rounded-lg p-4 border border-[#DEB887]">
           <div className="flex items-center gap-3 mb-4">

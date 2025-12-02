@@ -1,14 +1,32 @@
 import { useState } from 'react';
-import { Camera, X, Plus, Trash2, Sparkles } from 'lucide-react';
+import { Camera, X, Plus, Trash2, Sparkles, ExternalLink } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { Label } from './ui/label';
 import logoImage from '../assets/25e052c30c60417278690aee9375257caca59348.png';
 
+export interface RecipeSubmitData {
+  title: string;
+  cuisine: string;
+  mealType: 'breakfast' | 'lunch' | 'dinner';
+  photo: string;
+  ingredients: string[];
+  steps: string[];
+  productLinks: ProductLink[];
+}
+
 interface UploadRecipeProps {
-  onComplete: (points: number) => void;
+  onComplete: (points: number, recipeData?: RecipeSubmitData) => void;
   onCancel: () => void;
+}
+
+// Product link type for recipes
+interface ProductLink {
+  name: string;
+  url: string;
+  price: string;
+  store: string;
 }
 
 // Preset food photos for Beta AI generation - using accurate Unsplash photos
@@ -19,7 +37,11 @@ const PRESET_FOOD_PHOTOS = [
     cuisine: 'Japanese',
     mealType: 'lunch' as const,
     ingredients: ['Ramen noodles', 'Pork belly', 'Soft-boiled egg', 'Green onions', 'Nori seaweed', 'Miso paste', 'Chicken broth'],
-    steps: ['Prepare rich chicken broth with miso paste', 'Cook ramen noodles according to package', 'Slice and sear pork belly until crispy', 'Soft-boil eggs for 6-7 minutes', 'Assemble bowl with noodles, broth, and toppings', 'Garnish with green onions and nori']
+    steps: ['Prepare rich chicken broth with miso paste', 'Cook ramen noodles according to package', 'Slice and sear pork belly until crispy', 'Soft-boil eggs for 6-7 minutes', 'Assemble bowl with noodles, broth, and toppings', 'Garnish with green onions and nori'],
+    productLinks: [
+      { name: 'Ramen Noodles Pack', url: 'https://amazon.com/ramen', price: '$8.99', store: 'Amazon' },
+      { name: 'Miso Paste', url: 'https://amazon.com/miso', price: '$6.99', store: 'Amazon' }
+    ]
   },
   {
     url: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=800&q=80',
@@ -27,7 +49,11 @@ const PRESET_FOOD_PHOTOS = [
     cuisine: 'Italian',
     mealType: 'dinner' as const,
     ingredients: ['Pizza dough', 'San Marzano tomatoes', 'Fresh mozzarella', 'Fresh basil', 'Olive oil', 'Sea salt', 'Garlic'],
-    steps: ['Stretch pizza dough into a round shape', 'Spread crushed tomatoes evenly', 'Add torn mozzarella pieces', 'Drizzle with olive oil', 'Bake at 450°F for 12-15 minutes', 'Top with fresh basil leaves']
+    steps: ['Stretch pizza dough into a round shape', 'Spread crushed tomatoes evenly', 'Add torn mozzarella pieces', 'Drizzle with olive oil', 'Bake at 450°F for 12-15 minutes', 'Top with fresh basil leaves'],
+    productLinks: [
+      { name: 'San Marzano Tomatoes', url: 'https://amazon.com/tomatoes', price: '$5.99', store: 'Amazon' },
+      { name: 'Fresh Mozzarella', url: 'https://traderjoes.com/cheese', price: '$4.99', store: "Trader Joe's" }
+    ]
   },
   {
     url: 'https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=800&q=80',
@@ -35,7 +61,11 @@ const PRESET_FOOD_PHOTOS = [
     cuisine: 'Thai',
     mealType: 'dinner' as const,
     ingredients: ['Chicken breast', 'Green curry paste', 'Coconut milk', 'Thai basil', 'Bamboo shoots', 'Bell peppers', 'Fish sauce', 'Palm sugar'],
-    steps: ['Heat coconut cream and fry curry paste until fragrant', 'Add chicken and cook until white', 'Pour in remaining coconut milk', 'Add vegetables and simmer', 'Season with fish sauce and palm sugar', 'Garnish with Thai basil']
+    steps: ['Heat coconut cream and fry curry paste until fragrant', 'Add chicken and cook until white', 'Pour in remaining coconut milk', 'Add vegetables and simmer', 'Season with fish sauce and palm sugar', 'Garnish with Thai basil'],
+    productLinks: [
+      { name: 'Thai Green Curry Paste', url: 'https://amazon.com/curry-paste', price: '$4.99', store: 'Amazon' },
+      { name: 'Coconut Milk', url: 'https://amazon.com/coconut', price: '$2.99', store: 'Amazon' }
+    ]
   },
   {
     url: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=800&q=80',
@@ -43,7 +73,10 @@ const PRESET_FOOD_PHOTOS = [
     cuisine: 'French',
     mealType: 'breakfast' as const,
     ingredients: ['All-purpose flour', 'Butter', 'Milk', 'Sugar', 'Salt', 'Active dry yeast', 'Egg wash'],
-    steps: ['Make dough and let it rest overnight', 'Laminate dough with butter layers', 'Fold and roll multiple times', 'Cut into triangles and roll into crescents', 'Proof until doubled in size', 'Brush with egg wash and bake at 375°F']
+    steps: ['Make dough and let it rest overnight', 'Laminate dough with butter layers', 'Fold and roll multiple times', 'Cut into triangles and roll into crescents', 'Proof until doubled in size', 'Brush with egg wash and bake at 375°F'],
+    productLinks: [
+      { name: 'French Butter', url: 'https://amazon.com/butter', price: '$7.99', store: 'Amazon' }
+    ]
   },
   {
     url: 'https://images.unsplash.com/photo-1553163147-622ab57be1c7?w=800&q=80',
@@ -51,7 +84,11 @@ const PRESET_FOOD_PHOTOS = [
     cuisine: 'Korean',
     mealType: 'lunch' as const,
     ingredients: ['Rice', 'Beef bulgogi', 'Spinach', 'Bean sprouts', 'Carrots', 'Zucchini', 'Fried egg', 'Gochujang sauce', 'Sesame oil'],
-    steps: ['Cook rice and keep warm', 'Marinate and cook beef bulgogi', 'Blanch and season vegetables separately', 'Arrange rice in bowl', 'Top with vegetables and beef in sections', 'Add fried egg and gochujang sauce']
+    steps: ['Cook rice and keep warm', 'Marinate and cook beef bulgogi', 'Blanch and season vegetables separately', 'Arrange rice in bowl', 'Top with vegetables and beef in sections', 'Add fried egg and gochujang sauce'],
+    productLinks: [
+      { name: 'Gochujang Sauce', url: 'https://amazon.com/gochujang', price: '$5.99', store: 'Amazon' },
+      { name: 'Sesame Oil', url: 'https://hmart.com/sesame', price: '$6.99', store: 'H Mart' }
+    ]
   },
   {
     url: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=800&q=80',
@@ -59,7 +96,11 @@ const PRESET_FOOD_PHOTOS = [
     cuisine: 'Mediterranean',
     mealType: 'lunch' as const,
     ingredients: ['Mixed greens', 'Cherry tomatoes', 'Cucumber', 'Feta cheese', 'Kalamata olives', 'Red onion', 'Olive oil', 'Lemon juice'],
-    steps: ['Wash and dry all vegetables', 'Chop vegetables into bite-sized pieces', 'Crumble feta cheese', 'Combine all ingredients in a large bowl', 'Whisk olive oil and lemon juice', 'Toss salad with dressing just before serving']
+    steps: ['Wash and dry all vegetables', 'Chop vegetables into bite-sized pieces', 'Crumble feta cheese', 'Combine all ingredients in a large bowl', 'Whisk olive oil and lemon juice', 'Toss salad with dressing just before serving'],
+    productLinks: [
+      { name: 'Feta Cheese', url: 'https://traderjoes.com/feta', price: '$4.99', store: "Trader Joe's" },
+      { name: 'Extra Virgin Olive Oil', url: 'https://amazon.com/olive-oil', price: '$12.99', store: 'Amazon' }
+    ]
   },
   {
     url: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&q=80',
@@ -67,7 +108,10 @@ const PRESET_FOOD_PHOTOS = [
     cuisine: 'American',
     mealType: 'dinner' as const,
     ingredients: ['Ground beef', 'Burger buns', 'Cheddar cheese', 'Lettuce', 'Tomato', 'Onion', 'Pickles', 'Special sauce'],
-    steps: ['Form beef into patties and season with salt and pepper', 'Grill patties for 4-5 minutes per side', 'Add cheese in last minute to melt', 'Toast burger buns on the grill', 'Assemble with lettuce, tomato, onion', 'Top with pickles and special sauce']
+    steps: ['Form beef into patties and season with salt and pepper', 'Grill patties for 4-5 minutes per side', 'Add cheese in last minute to melt', 'Toast burger buns on the grill', 'Assemble with lettuce, tomato, onion', 'Top with pickles and special sauce'],
+    productLinks: [
+      { name: 'Brioche Burger Buns', url: 'https://traderjoes.com/buns', price: '$3.99', store: "Trader Joe's" }
+    ]
   }
 ];
 
@@ -82,6 +126,9 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
   const [mealType, setMealType] = useState<'breakfast' | 'lunch' | 'dinner' | ''>('');
   const [ingredients, setIngredients] = useState<string[]>(['']);
   const [steps, setSteps] = useState<string[]>(['']);
+  const [productLinks, setProductLinks] = useState<ProductLink[]>([]);
+  const [productUrlInput, setProductUrlInput] = useState('');
+  const [isParsingUrl, setIsParsingUrl] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationProgress, setGenerationProgress] = useState(0);
@@ -128,7 +175,16 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
   const handleSubmit = () => {
     setShowCelebration(true);
     setTimeout(() => {
-      onComplete(15); // Award 15 points
+      const recipeData: RecipeSubmitData = {
+        title,
+        cuisine,
+        mealType: mealType as 'breakfast' | 'lunch' | 'dinner',
+        photo,
+        ingredients: ingredients.filter(i => i.trim()),
+        steps: steps.filter(s => s.trim()),
+        productLinks,
+      };
+      onComplete(15, recipeData); // Award 15 points and pass recipe data
     }, 2000);
   };
 
@@ -168,11 +224,43 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
       setMealType(recipe.mealType);
       setIngredients(recipe.ingredients);
       setSteps(recipe.steps);
+      // AI automatically finds related products
+      if (recipe.productLinks) {
+        setProductLinks(recipe.productLinks);
+      }
       
       setIsGenerating(false);
       setGenerationProgress(0);
       setStep(4); // Skip directly to review step (no manual input needed)
     }, 6200);
+  };
+
+  // Parse product URL (simulated)
+  const handleAddProductUrl = () => {
+    if (!productUrlInput.trim()) return;
+    
+    setIsParsingUrl(true);
+    // Simulate URL parsing delay
+    setTimeout(() => {
+      // Generate a fake product based on URL
+      const newProduct: ProductLink = {
+        name: productUrlInput.includes('amazon') ? 'Premium Ingredients Set' : 
+              productUrlInput.includes('walmart') ? 'Fresh Produce Bundle' : 
+              'Cooking Essentials',
+        url: productUrlInput,
+        price: `$${(Math.random() * 20 + 5).toFixed(2)}`,
+        store: productUrlInput.includes('amazon') ? 'Amazon' : 
+               productUrlInput.includes('walmart') ? 'Walmart' : 
+               productUrlInput.includes('target') ? 'Target' : 'Online Store'
+      };
+      setProductLinks([...productLinks, newProduct]);
+      setProductUrlInput('');
+      setIsParsingUrl(false);
+    }, 1500);
+  };
+
+  const removeProductLink = (index: number) => {
+    setProductLinks(productLinks.filter((_, i) => i !== index));
   };
 
   const handleSelectPresetPhoto = (index: number) => {
@@ -213,7 +301,7 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
 
   if (showCelebration) {
     return (
-      <div className="min-h-screen bg-[#FFF8F0] flex flex-col items-center justify-center p-6">
+      <div className="min-h-screen bg-[#FFF8F0] flex flex-col items-center justify-center p-6 md:p-8">
         <div className="text-center">
           <div className="w-32 h-32 bg-gradient-to-br from-[#FFE8D6] to-[#FFDDB8] rounded-full flex items-center justify-center mb-6 mx-auto animate-bounce">
             <Sparkles className="w-16 h-16 text-[#8B4513]" />
@@ -227,9 +315,9 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
   }
 
   return (
-    <div className="w-full max-w-lg mx-auto min-h-screen bg-[#FFF8F0] md:max-w-2xl lg:max-w-4xl">
+    <div className="w-full max-w-lg mx-auto min-h-screen bg-[#FFF8F0] md:max-w-none">
       {/* Header */}
-      <header className="bg-white border-b border-[#DEB887] px-4 py-4 sticky top-0 z-10 md:px-6">
+      <header className="bg-white border-b border-[#DEB887] px-4 py-4 sticky top-0 z-10 md:px-8 md:py-6 md:bg-gradient-to-r md:from-[#FFF8F0] md:to-white md:border-b-2">
         <div className="flex items-center justify-between max-w-3xl mx-auto">
           <button onClick={onCancel} className="text-[#A0522D]">
             <X className="w-6 h-6" />
@@ -262,7 +350,7 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
         )}
       </header>
 
-      <div className="p-4 md:p-6 lg:p-8 max-w-3xl mx-auto">
+      <div className="p-4 md:p-8 max-w-3xl mx-auto">
         {/* Step 0: Mode Selection */}
         {step === 0 && (
           <div className="space-y-4 md:space-y-6">
@@ -720,7 +808,7 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
               </div>
 
               {/* Steps */}
-              <div className="bg-white rounded-lg p-4 border border-[#DEB887]">
+              <div className="bg-white rounded-lg p-4 border border-[#DEB887] mb-4">
                 <h5 className="text-[#8B4513] font-semibold mb-3">Cooking Steps</h5>
                 <ol className="space-y-3">
                   {steps.filter(s => s.trim()).map((stepText, index) => (
@@ -732,6 +820,78 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
                     </li>
                   ))}
                 </ol>
+              </div>
+
+              {/* Product Links */}
+              <div className="bg-white rounded-lg p-4 border border-[#DEB887]">
+                <h5 className="text-[#8B4513] font-semibold mb-3 flex items-center gap-2">
+                  🛒 Linked Products
+                  {useBetaMode && productLinks.length > 0 && (
+                    <span className="text-xs bg-[#FFE8D6] px-2 py-0.5 rounded-full">AI Found</span>
+                  )}
+                </h5>
+                
+                {/* Existing product links */}
+                {productLinks.length > 0 && (
+                  <div className="space-y-2 mb-4">
+                    {productLinks.map((product, index) => (
+                      <div key={index} className="flex items-center justify-between bg-[#FFF8F0] p-3 rounded-lg border border-[#DEB887]">
+                        <div className="flex-1 min-w-0">
+                          <div className="text-[#8B4513] font-medium text-sm truncate">{product.name}</div>
+                          <div className="text-[#A0522D] text-xs flex items-center gap-2">
+                            <span>{product.store}</span>
+                            <span>•</span>
+                            <span className="font-semibold">{product.price}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 ml-2">
+                          <a 
+                            href={product.url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-[#8B4513] hover:text-[#6B3410]"
+                          >
+                            <ExternalLink className="w-4 h-4" />
+                          </a>
+                          <button 
+                            onClick={() => removeProductLink(index)}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Add product URL input */}
+                <div className="space-y-2">
+                  <Label className="text-[#A0522D] text-sm">Add product link (paste URL)</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      type="url"
+                      placeholder="https://amazon.com/product..."
+                      value={productUrlInput}
+                      onChange={(e) => setProductUrlInput(e.target.value)}
+                      className="flex-1 border-[#DEB887] focus:border-[#8B4513] text-sm"
+                    />
+                    <Button
+                      onClick={handleAddProductUrl}
+                      disabled={!productUrlInput.trim() || isParsingUrl}
+                      className="bg-[#8B4513] hover:bg-[#A0522D] text-white px-4"
+                    >
+                      {isParsingUrl ? (
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <Plus className="w-4 h-4" />
+                      )}
+                    </Button>
+                  </div>
+                  <p className="text-[#A0522D] text-xs">
+                    Link products from Amazon, Walmart, Target, etc. to help others find ingredients!
+                  </p>
+                </div>
               </div>
             </div>
 

@@ -20,9 +20,9 @@ export function Home({ user, recipes, onLike, onRecipeClick, onComment, onShare,
   const progressPercentage = (user.points / pointsToSteak) * 100;
 
   return (
-    <div className="max-w-lg mx-auto md:max-w-none md:w-full md:px-4 md:py-2">
+    <div className="max-w-lg mx-auto md:max-w-none md:w-full">
       {/* Header */}
-      <header className="bg-white border-b border-[#DEB887] px-4 py-3 sticky top-0 z-10 md:px-6 md:py-4">
+      <header className="bg-white border-b border-[#DEB887] px-4 py-3 sticky top-0 z-10 md:px-8 md:py-6 md:bg-gradient-to-r md:from-[#FFF8F0] md:to-white md:border-b-2">
         <div className="flex items-center justify-between mb-3">
           <div>
             <h1 className="text-[#8B4513]">Eamin's Kitchen</h1>
@@ -59,7 +59,7 @@ export function Home({ user, recipes, onLike, onRecipeClick, onComment, onShare,
       </header>
 
       {/* AI Recommendation */}
-      <div className="mx-4 mt-3 md:mx-6 md:mt-4">
+      <div className="mx-4 mt-3 md:mx-8 md:mt-6">
         <AIRecommendation
           recipes={recipes}
           userName={user.name}
@@ -68,7 +68,7 @@ export function Home({ user, recipes, onLike, onRecipeClick, onComment, onShare,
       </div>
 
       {/* Weekly Challenge */}
-      <div className="mx-4 mt-3 bg-gradient-to-r from-[#FFE8D6] to-[#FFDDB8] p-3 rounded-lg border border-[#DEB887] md:mx-6 md:mt-4 md:p-4">
+      <div className="mx-4 mt-3 bg-gradient-to-r from-[#FFE8D6] to-[#FFDDB8] p-3 rounded-lg border border-[#DEB887] md:mx-8 md:mt-6 md:p-6 md:rounded-xl md:shadow-sm">
         <div className="flex items-start gap-3">
           <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
             <TrendingUp className="w-6 h-6 text-[#8B4513]" />
@@ -82,9 +82,9 @@ export function Home({ user, recipes, onLike, onRecipeClick, onComment, onShare,
       </div>
 
       {/* Recipe Feed */}
-      <div className="px-4 py-4 md:px-6 md:py-4">
-        <h2 className="text-[#8B4513] mb-4 md:mb-4">Community Recipes</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-4 lg:gap-5">
+      <div className="px-4 py-4 md:px-8 md:py-6">
+        <h2 className="text-[#8B4513] mb-4 md:mb-6 md:text-2xl">Community Recipes</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
           {recipes.map((recipe) => (
             <div key={recipe.id} onClick={() => onRecipeClick(recipe)} className="cursor-pointer">
               <RecipeCard

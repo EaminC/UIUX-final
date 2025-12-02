@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ArrowLeft, Heart, MessageCircle, Share2, Star, Clock, Users } from 'lucide-react';
+import { ArrowLeft, Heart, MessageCircle, Share2, Star, Clock, Users, ExternalLink, ShoppingCart } from 'lucide-react';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
@@ -45,9 +45,9 @@ export function RecipeDetail({
   };
 
   return (
-    <div className="max-w-lg mx-auto min-h-screen bg-[#FFF8F0] md:max-w-none md:w-full md:px-4 md:py-2">
+    <div className="max-w-lg mx-auto min-h-screen bg-[#FFF8F0] md:max-w-none md:w-full">
       {/* Header */}
-      <header className="bg-white border-b border-[#DEB887] px-4 py-4 sticky top-0 z-10">
+      <header className="bg-white border-b border-[#DEB887] px-4 py-4 sticky top-0 z-10 md:px-8 md:py-6 md:bg-gradient-to-r md:from-[#FFF8F0] md:to-white md:border-b-2">
         <div className="flex items-center gap-3">
           <button onClick={onBack} className="text-[#A0522D]">
             <ArrowLeft className="w-6 h-6" />
@@ -136,6 +136,37 @@ export function RecipeDetail({
               ))}
             </ol>
           </div>
+
+          {/* Product Links */}
+          {recipe.productLinks && recipe.productLinks.length > 0 && (
+            <div>
+              <h3 className="text-[#8B4513] text-xl mb-3 flex items-center gap-2">
+                <ShoppingCart className="w-5 h-5" />
+                Shop Ingredients
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {recipe.productLinks.map((product, index) => (
+                  <a
+                    key={index}
+                    href={product.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between bg-white p-3 rounded-lg border border-[#DEB887] hover:border-[#8B4513] hover:shadow-md transition-all"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[#8B4513] font-medium text-sm truncate">{product.name}</div>
+                      <div className="text-[#A0522D] text-xs flex items-center gap-2">
+                        <span>{product.store}</span>
+                        <span>•</span>
+                        <span className="font-semibold text-green-600">{product.price}</span>
+                      </div>
+                    </div>
+                    <ExternalLink className="w-4 h-4 text-[#8B4513] ml-2 flex-shrink-0" />
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Actions */}
           <div className="flex items-center gap-4 pt-4 border-t border-[#DEB887]">

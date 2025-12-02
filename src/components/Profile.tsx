@@ -46,15 +46,15 @@ export function Profile({ user, recipes, onRecipeClick, onNavigateToDetails }: P
   const progressPercentage = (user.points / pointsToSteak) * 100;
 
   return (
-    <div className="max-w-lg mx-auto md:max-w-none md:w-full md:px-4 md:py-2">
+    <div className="max-w-lg mx-auto md:max-w-none md:w-full">
       {/* Header */}
-      <header className="bg-white border-b border-[#DEB887] px-4 py-4">
-        <h1 className="text-[#8B4513]">Profile</h1>
+      <header className="bg-white border-b border-[#DEB887] px-4 py-4 md:px-8 md:py-6 md:bg-gradient-to-r md:from-[#FFF8F0] md:to-white md:border-b-2">
+        <h1 className="text-[#8B4513] md:text-2xl">Profile</h1>
       </header>
 
-      <div className="p-4 space-y-6">
+      <div className="p-4 space-y-6 md:p-8 md:space-y-8">
         {/* User Info */}
-        <div className="bg-white rounded-lg p-6 border border-[#DEB887]">
+        <div className="bg-white rounded-lg p-6 border border-[#DEB887] md:p-8 md:rounded-xl md:shadow-sm">
           <div className="flex items-start gap-4 mb-6">
             <Avatar className="w-20 h-20">
               <AvatarImage src={user.avatar} alt={user.name} />
@@ -119,7 +119,7 @@ export function Profile({ user, recipes, onRecipeClick, onNavigateToDetails }: P
         </div>
 
         {/* Reward Progress */}
-        <div className="bg-gradient-to-r from-[#FFE8D6] to-[#FFDDB8] rounded-lg p-6 border border-[#DEB887]">
+        <div className="bg-gradient-to-r from-[#FFE8D6] to-[#FFDDB8] rounded-lg p-6 border border-[#DEB887] md:p-8 md:rounded-xl md:shadow-sm">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
               <Trophy className="w-6 h-6 text-[#8B4513]" />
@@ -135,7 +135,7 @@ export function Profile({ user, recipes, onRecipeClick, onNavigateToDetails }: P
         {/* Achievements */}
         <div>
           <h2 className="text-[#8B4513] mb-4">Achievements</h2>
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
             {achievements.map((achievement, index) => {
               const Icon = achievement.icon;
               return (
@@ -205,7 +205,7 @@ export function Profile({ user, recipes, onRecipeClick, onNavigateToDetails }: P
               <p className="text-sm mt-2">Start sharing your favorite dishes!</p>
             </div>
           ) : (
-            <div className="grid grid-cols-3 gap-3 md:grid-cols-4 lg:grid-cols-6">
+            <div className="grid grid-cols-3 gap-3 md:grid-cols-4 lg:grid-cols-6 md:gap-4">
               {recipes.slice(0, 6).map((recipe) => (
                 <div
                   key={recipe.id}

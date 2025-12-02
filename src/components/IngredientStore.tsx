@@ -1,4 +1,4 @@
-import { ExternalLink, MapPin, Tag } from 'lucide-react';
+import { ExternalLink, MapPin, Tag, ChefHat } from 'lucide-react';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 
@@ -11,6 +11,7 @@ interface Product {
   image: string;
   category: string;
   link: string;
+  relatedRecipeIds?: string[]; // Link to recipes that use this ingredient
 }
 
 const mockProducts: Product[] = [
@@ -22,7 +23,8 @@ const mockProducts: Product[] = [
     discount: '20% OFF',
     image: 'https://images.unsplash.com/photo-1730595442402-0feffe7833c3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzcGljZXMlMjBoZXJicyUyMGNvb2tpbmd8ZW58MXx8fHwxNzY0NjQ1NDg5fDA&ixlib=rb-4.1.0&q=80&w=1080',
     category: 'Spices',
-    link: '#',
+    link: 'https://amazon.com/spices',
+    relatedRecipeIds: ['5', '6', '7'], // Shanghai dishes
   },
   {
     id: '2',
@@ -31,7 +33,8 @@ const mockProducts: Product[] = [
     price: '$8.99',
     image: 'https://images.unsplash.com/photo-1748342319942-223b99937d4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmcmVzaCUyMHZlZ2V0YWJsZXMlMjBtYXJrZXR8ZW58MXx8fHwxNzY0NTkyMTA4fDA&ixlib=rb-4.1.0&q=80&w=1080',
     category: 'Vegetables',
-    link: '#',
+    link: 'https://traderjoes.com/produce',
+    relatedRecipeIds: ['1', '2'], // Dumplings, Butter Chicken
   },
   {
     id: '3',
@@ -41,7 +44,8 @@ const mockProducts: Product[] = [
     discount: '15% OFF',
     image: 'https://images.unsplash.com/photo-1760104051489-a8030f560159?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhc2lhbiUyMGdyb2NlcnklMjBzdG9yZSUyMGluZ3JlZGllbnRzfGVufDF8fHx8MTc2NDY0NTQ4OHww&ixlib=rb-4.1.0&q=80&w=1080',
     category: 'Sauces',
-    link: '#',
+    link: 'https://amazon.com/asian-sauces',
+    relatedRecipeIds: ['5', '7'], // Braised Pork, Scallion Noodles
   },
 ];
 
@@ -53,18 +57,19 @@ const nearbyStores = [
 
 interface IngredientStoreProps {
   onStoreClick?: (storeName: string, address: string) => void;
+  onViewRecipes?: (recipeIds: string[]) => void;
 }
 
-export function IngredientStore({ onStoreClick }: IngredientStoreProps) {
+export function IngredientStore({ onStoreClick, onViewRecipes }: IngredientStoreProps) {
   return (
-    <div className="max-w-lg mx-auto md:max-w-none md:w-full md:px-4 md:py-2">
+    <div className="max-w-lg mx-auto md:max-w-none md:w-full">
       {/* Header */}
-      <header className="bg-white border-b border-[#DEB887] px-4 py-4 sticky top-0 z-10">
-        <h1 className="text-[#8B4513]">Ingredient Store</h1>
+      <header className="bg-white border-b border-[#DEB887] px-4 py-4 sticky top-0 z-10 md:px-8 md:py-6 md:bg-gradient-to-r md:from-[#FFF8F0] md:to-white md:border-b-2">
+        <h1 className="text-[#8B4513] md:text-2xl">Ingredient Store</h1>
         <p className="text-[#A0522D]">Find authentic ingredients nearby</p>
       </header>
 
-      <div className="p-4 space-y-6 md:px-6 md:py-4">
+      <div className="p-4 space-y-6 md:px-8 md:py-6 md:space-y-8">
         {/* Nearby Stores */}
         <div>
           <div className="flex items-center gap-2 mb-4">
@@ -137,14 +142,13 @@ export function IngredientStore({ onStoreClick }: IngredientStoreProps) {
                   </div>
                 </div>
 
-                <div className="px-4 pb-4">
+                <div className="px-4 pb-4 space-y-2">
                   <Button
                     className="w-full bg-[#8B4513] hover:bg-[#A0522D] text-white"
                     onClick={() => {
                       if (product.link && product.link !== '#') {
                         window.open(product.link, '_blank');
                       } else {
-                        // Fallback: show product details
                         alert(`Product: ${product.name}\nStore: ${product.store}\nPrice: ${product.price}`);
                       }
                     }}
@@ -152,6 +156,20 @@ export function IngredientStore({ onStoreClick }: IngredientStoreProps) {
                     <ExternalLink className="w-4 h-4 mr-2" />
                     View Deal
                   </Button>
+                  {product.relatedRecipeIds && product.relatedRecipeIds.length > 0 && (
+                    <Button
+                      variant="outline"
+                      className="w-full border-[#8B4513] text-[#8B4513] hover:bg-[#FFE8D6]"
+                      onClick={() => {
+                        if (onViewRecipes) {
+                          onViewRecipes(product.relatedRecipeIds!);
+                        }
+                      }}
+                    >
+                      <ChefHat className="w-4 h-4 mr-2" />
+                      View {product.relatedRecipeIds.length} Recipe{product.relatedRecipeIds.length > 1 ? 's' : ''}
+                    </Button>
+                  )}
                 </div>
               </div>
             ))}

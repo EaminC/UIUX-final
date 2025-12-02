@@ -47,6 +47,14 @@ export type Screen =
   | 'profile-details'
   | 'settings';
 
+export interface ProductLink {
+  id: string;
+  name: string;
+  url: string;
+  price?: string;
+  store?: string;
+}
+
 export interface Recipe {
   id: string;
   title: string;
@@ -65,6 +73,7 @@ export interface Recipe {
   mealType?: 'breakfast' | 'lunch' | 'dinner';
   userId?: string;
   commentList?: Comment[];
+  productLinks?: ProductLink[];
 }
 
 export interface Comment {
@@ -118,6 +127,11 @@ const mockRecipes: Recipe[] = [
     timestamp: '3 hours ago',
     isLiked: false,
     mealType: 'dinner',
+    productLinks: [
+      { id: 'p1', name: 'Premium Pork Belly', url: 'https://amazon.com/pork-belly', price: '$15.99', store: 'Amazon' },
+      { id: 'p2', name: 'Shaoxing Cooking Wine', url: 'https://hmart.com/shaoxing', price: '$6.99', store: 'H Mart' },
+      { id: 'p3', name: 'Chinese Rock Sugar', url: 'https://amazon.com/rock-sugar', price: '$4.99', store: 'Amazon' },
+    ],
   },
   {
     id: '6',
@@ -134,6 +148,10 @@ const mockRecipes: Recipe[] = [
     timestamp: '1 day ago',
     isLiked: true,
     mealType: 'lunch',
+    productLinks: [
+      { id: 'p4', name: 'Dumpling Wrappers (Round)', url: 'https://hmart.com/wrappers', price: '$3.99', store: 'H Mart' },
+      { id: 'p5', name: 'Chinkiang Vinegar', url: 'https://amazon.com/vinegar', price: '$5.99', store: 'Amazon' },
+    ],
   },
   {
     id: '7',
@@ -150,6 +168,10 @@ const mockRecipes: Recipe[] = [
     timestamp: '2 days ago',
     isLiked: false,
     mealType: 'lunch',
+    productLinks: [
+      { id: 'p6', name: 'Fresh Shanghai Noodles', url: 'https://hmart.com/noodles', price: '$4.99', store: 'H Mart' },
+      { id: 'p7', name: 'Premium Light Soy Sauce', url: 'https://amazon.com/soy-sauce', price: '$7.99', store: 'Amazon' },
+    ],
   },
   {
     id: '2',
@@ -321,12 +343,42 @@ export default function App() {
     setCurrentScreen(screen);
   };
 
-  const handleRecipeUpload = (points: number) => {
+  const handleRecipeUpload = (points: number, recipeData?: import('./components/UploadRecipe').RecipeSubmitData) => {
     setUser({
       ...user,
       points: user.points + points,
       recipesUploaded: user.recipesUploaded + 1,
     });
+    
+    // Add the new recipe to the list
+    if (recipeData) {
+      const newRecipe: Recipe = {
+        id: `user-${Date.now()}`,
+        title: recipeData.title,
+        author: user.name,
+        authorAvatar: user.avatar,
+        image: recipeData.photo,
+        cuisine: recipeData.cuisine,
+        ingredients: recipeData.ingredients,
+        steps: recipeData.steps,
+        likes: 0,
+        comments: 0,
+        timestamp: 'Just now',
+        isLiked: false,
+        rating: 0,
+        mealType: recipeData.mealType,
+        productLinks: recipeData.productLinks.map((p, i) => ({
+          id: `product-${Date.now()}-${i}`,
+          name: p.name,
+          url: p.url,
+          price: p.price,
+          store: p.store,
+        })),
+        commentList: [],
+      };
+      setRecipes([newRecipe, ...recipes]);
+    }
+    
     setCurrentScreen('home');
   };
 
@@ -580,9 +632,26 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#FFF8F0] pb-20 md:pb-0 md:bg-gray-50">
       {/* Desktop container wrapper */}
-      <div className="max-w-6xl mx-auto md:min-h-screen md:flex md:bg-white md:shadow-md md:my-2 md:rounded-xl overflow-hidden md:max-h-[calc(100vh-1rem)]">
+      <div className="md:max-w-7xl md:mx-auto md:min-h-screen md:flex md:bg-white md:shadow-lg md:my-4 md:rounded-2xl md:overflow-hidden md:max-h-[calc(100vh-2rem)]">
+        {/* Sidebar Navigation for Desktop */}
+        {currentScreen !== 'onboarding' &&
+          currentScreen !== 'login' &&
+          currentScreen !== 'signup' &&
+          currentScreen !== 'google-login' &&
+          currentScreen !== 'apple-login' &&
+          currentScreen !== 'wechat-login' &&
+          currentScreen !== 'preferences' &&
+          currentScreen !== 'menu' &&
+          currentScreen !== 'recipe-detail' &&
+          currentScreen !== 'photo-library' &&
+          currentScreen !== 'settings' && (
+          <div className="hidden md:block">
+            <Navigation currentScreen={currentScreen} onNavigate={handleNavigate} />
+          </div>
+        )}
+        
         {/* Main content area */}
-        <div className="flex-1 md:overflow-y-auto md:min-w-0">
+        <div className="flex-1 md:overflow-y-auto md:min-w-0 md:bg-[#FAFAFA]">
       {currentScreen === 'onboarding' && (
         <Onboarding onComplete={handleCompleteOnboarding} />
       )}
@@ -617,7 +686,17 @@ export default function App() {
         />
       )}
       {currentScreen === 'store' && (
-        <IngredientStore onStoreClick={handleStoreClick} />
+        <IngredientStore 
+          onStoreClick={handleStoreClick}
+          onViewRecipes={(recipeIds) => {
+            // Find the first matching recipe and show it
+            const matchingRecipe = recipes.find(r => recipeIds.includes(r.id));
+            if (matchingRecipe) {
+              setSelectedRecipe(matchingRecipe);
+              setCurrentScreen('recipe-detail');
+            }
+          }}
+        />
       )}
       {currentScreen === 'profile' && (
         <Profile
@@ -680,6 +759,7 @@ export default function App() {
         />
       )}
 
+      {/* Mobile Navigation - only show on mobile */}
       {currentScreen !== 'onboarding' &&
         currentScreen !== 'login' &&
         currentScreen !== 'signup' &&
@@ -691,7 +771,9 @@ export default function App() {
         currentScreen !== 'recipe-detail' &&
         currentScreen !== 'photo-library' &&
         currentScreen !== 'settings' && (
-      <Navigation currentScreen={currentScreen} onNavigate={handleNavigate} />
+      <div className="md:hidden">
+        <Navigation currentScreen={currentScreen} onNavigate={handleNavigate} />
+      </div>
         )}
         </div>
       </div>
