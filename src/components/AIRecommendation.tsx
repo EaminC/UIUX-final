@@ -10,7 +10,7 @@ interface AIRecommendationProps {
   onRecipeClick: (recipe: Recipe) => void;
 }
 
-interface ProductRecommendation {
+interface RelatedProduct {
   name: string;
   store: string;
   price: string;
@@ -19,67 +19,21 @@ interface ProductRecommendation {
   discount?: string;
 }
 
-type AIResponse = {
-  text: string;
-  reason: string;
-  type: 'recipe';
+interface AIRecommendation {
+  recipeText: string;
   recipeId: string;
-} | {
-  text: string;
   reason: string;
-  type: 'product';
-  product: ProductRecommendation;
-};
+  relatedProduct: RelatedProduct;
+  productReason: string;
+}
 
-const AI_RESPONSES: AIResponse[] = [
+// Each recommendation includes both a recipe AND a related product
+const AI_RECOMMENDATIONS: AIRecommendation[] = [
   {
-    text: "Based on your love for Shanghai cuisine and recent activity, I recommend trying our Shanghai Soup Dumplings! The delicate skin and savory broth make it a perfect comfort food. 🥟",
+    recipeText: "Based on your love for Shanghai cuisine, I recommend trying our Shanghai Soup Dumplings! The delicate skin and savory broth make it a perfect comfort food. 🥟",
     recipeId: '6',
-    type: 'recipe',
-    reason: "You've been exploring Chinese recipes lately"
-  },
-  {
-    text: "I found a great deal for you! This Shaoxing Cooking Wine is essential for authentic Chinese cooking. It's on sale at H Mart and perfect for your braised pork recipe! 🍶",
-    type: 'product',
-    product: {
-      name: 'Shaoxing Cooking Wine (750ml)',
-      store: 'H Mart',
-      price: '$6.99',
-      discount: '15% OFF',
-      url: 'https://hmart.com/shaoxing-wine',
-      image: 'https://images.unsplash.com/photo-1516594915697-87eb3b1c14ea?w=400&q=80'
-    },
-    reason: "Essential ingredient for your favorite Shanghai dishes"
-  },
-  {
-    text: "I noticed you enjoyed the Butter Chicken! For a similar rich and creamy experience, try our Shanghai Braised Pork. The caramelized sauce is absolutely divine! 🍖",
-    recipeId: '5',
-    type: 'recipe',
-    reason: "Based on your preference for rich, savory dishes"
-  },
-  {
-    text: "Stock up on this premium Soy Sauce! It's the secret to authentic Asian flavors. Amazon has it at a great price right now. 🥢",
-    type: 'product',
-    product: {
-      name: 'Kikkoman Soy Sauce (1L)',
-      store: 'Amazon',
-      price: '$7.99',
-      discount: '20% OFF',
-      url: 'https://amazon.com/soy-sauce',
-      image: 'https://images.unsplash.com/photo-1590794056226-79ef3a8147e1?w=400&q=80'
-    },
-    reason: "Top-rated ingredient in your saved recipes"
-  },
-  {
-    text: "Looking for something quick and delicious? Our Scallion Oil Noodles are perfect for a busy weeknight. Simple ingredients, maximum flavor! 🍜",
-    recipeId: '7',
-    type: 'recipe',
-    reason: "Quick recipes matching your cooking style"
-  },
-  {
-    text: "Perfect for your dumpling adventures! These bamboo steamers are highly rated and on sale. A must-have for authentic soup dumplings! 🎋",
-    type: 'product',
-    product: {
+    reason: "You've been exploring Chinese recipes lately",
+    relatedProduct: {
       name: 'Bamboo Steamer Set (10 inch)',
       store: 'Amazon',
       price: '$24.99',
@@ -87,13 +41,48 @@ const AI_RESPONSES: AIResponse[] = [
       url: 'https://amazon.com/bamboo-steamer',
       image: 'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=400&q=80'
     },
-    reason: "Perfect tool for your soup dumpling recipe"
+    productReason: "Essential tool for making perfect soup dumplings"
   },
   {
-    text: "Since you loved the Street Tacos, you might enjoy our Homemade Dumplings! Both are perfect for sharing with friends and family. 🥟",
+    recipeText: "I noticed you enjoyed rich, savory dishes! Try our Shanghai Braised Pork - the caramelized sauce is absolutely divine! 🍖",
+    recipeId: '5',
+    reason: "Based on your preference for rich, savory dishes",
+    relatedProduct: {
+      name: 'Shaoxing Cooking Wine (750ml)',
+      store: 'H Mart',
+      price: '$6.99',
+      discount: '15% OFF',
+      url: 'https://hmart.com/shaoxing-wine',
+      image: 'https://images.unsplash.com/photo-1516594915697-87eb3b1c14ea?w=400&q=80'
+    },
+    productReason: "Key ingredient for authentic braised pork flavor"
+  },
+  {
+    recipeText: "Looking for something quick? Our Scallion Oil Noodles are perfect for a busy weeknight. Simple ingredients, maximum flavor! 🍜",
+    recipeId: '7',
+    reason: "Quick recipes matching your cooking style",
+    relatedProduct: {
+      name: 'Premium Light Soy Sauce (1L)',
+      store: 'Amazon',
+      price: '$7.99',
+      discount: '20% OFF',
+      url: 'https://amazon.com/soy-sauce',
+      image: 'https://images.unsplash.com/photo-1590794056226-79ef3a8147e1?w=400&q=80'
+    },
+    productReason: "The secret to perfect scallion oil noodles"
+  },
+  {
+    recipeText: "Since you enjoy interactive dishes, try our Homemade Dumplings! Perfect for sharing with friends and family. 🥟",
     recipeId: '1',
-    type: 'recipe',
-    reason: "You enjoy interactive, shareable dishes"
+    reason: "You enjoy interactive, shareable dishes",
+    relatedProduct: {
+      name: 'Dumpling Wrappers (Round)',
+      store: 'H Mart',
+      price: '$3.99',
+      url: 'https://hmart.com/wrappers',
+      image: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=400&q=80'
+    },
+    productReason: "Fresh wrappers for the best dumpling texture"
   },
 ];
 
@@ -101,16 +90,12 @@ export function AIRecommendation({ recipes, userName, onRecipeClick }: AIRecomme
   const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  // Start with index 1 (product recommendation) to show product first, then alternate
-  const [currentResponse, setCurrentResponse] = useState(1);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [showRecommendation, setShowRecommendation] = useState(false);
 
-  const currentAIResponse = AI_RESPONSES[currentResponse];
-  const fullText = currentAIResponse.text;
-  const reason = currentAIResponse.reason;
-  const isRecipeRecommendation = currentAIResponse.type === 'recipe';
-  const recommendedRecipeId = isRecipeRecommendation ? currentAIResponse.recipeId : null;
-  const recommendedProduct = !isRecipeRecommendation ? currentAIResponse.product : null;
+  const currentRec = AI_RECOMMENDATIONS[currentIndex];
+  const fullText = currentRec.recipeText;
+  const recommendedRecipe = recipes.find((r) => r.id === currentRec.recipeId);
 
   useEffect(() => {
     if (!showRecommendation) return;
@@ -123,33 +108,31 @@ export function AIRecommendation({ recipes, userName, onRecipeClick }: AIRecomme
       setIsLoading(false);
       setIsTyping(true);
       
-      let currentIndex = 0;
+      let charIndex = 0;
       const typingInterval = setInterval(() => {
-        if (currentIndex <= fullText.length) {
-          setDisplayedText(fullText.slice(0, currentIndex));
-          currentIndex++;
+        if (charIndex <= fullText.length) {
+          setDisplayedText(fullText.slice(0, charIndex));
+          charIndex++;
         } else {
           setIsTyping(false);
           clearInterval(typingInterval);
         }
-      }, 30); // 30ms per character for smooth typing effect
+      }, 30);
 
       return () => clearInterval(typingInterval);
-    }, 800 + Math.random() * 700); // Random delay between 800-1500ms to simulate real AI
+    }, 800 + Math.random() * 700);
 
     return () => clearTimeout(loadingTimeout);
-  }, [fullText, showRecommendation, currentResponse]);
+  }, [fullText, showRecommendation, currentIndex]);
 
   const handleRefresh = () => {
-    setCurrentResponse((prev) => (prev + 1) % AI_RESPONSES.length);
+    setCurrentIndex((prev) => (prev + 1) % AI_RECOMMENDATIONS.length);
     setShowRecommendation(true);
   };
 
   const handleGetRecommendation = () => {
     setShowRecommendation(true);
   };
-
-  const recommendedRecipe = recipes.find((r) => r.id === recommendedRecipeId);
 
   return (
     <div className="bg-gradient-to-br from-[#FFE8D6] via-[#FFF8F0] to-[#FFE8D6] rounded-lg p-4 border-2 border-[#DEB887] shadow-md">
@@ -179,7 +162,7 @@ export function AIRecommendation({ recipes, userName, onRecipeClick }: AIRecomme
       {!showRecommendation ? (
         <div className="text-center py-6">
           <p className="text-[#A0522D] mb-4">
-            Get personalized recipes & product deals based on your preferences and cooking history
+            Get personalized recipe recommendations based on your preferences and cooking history
           </p>
           <Button
             onClick={handleGetRecommendation}
@@ -191,7 +174,8 @@ export function AIRecommendation({ recipes, userName, onRecipeClick }: AIRecomme
         </div>
       ) : (
         <>
-          <div className="bg-white rounded-lg p-4 mb-3 min-h-[100px] border border-[#DEB887] flex items-center">
+          {/* AI Text Response */}
+          <div className="bg-white rounded-lg p-4 mb-3 min-h-[80px] border border-[#DEB887] flex items-center">
             {isLoading ? (
               <div className="flex items-center gap-3 w-full justify-center">
                 <div className="w-5 h-5 border-2 border-[#8B4513] border-t-transparent rounded-full animate-spin" />
@@ -207,19 +191,16 @@ export function AIRecommendation({ recipes, userName, onRecipeClick }: AIRecomme
             )}
           </div>
 
-          {!isTyping && !isLoading && (recommendedRecipe || recommendedProduct) && (
-            <div className="space-y-2 animate-in fade-in slide-in-from-bottom-2 duration-500">
-              <div className="flex items-center gap-2 text-[#A0522D] text-sm">
-                {isRecipeRecommendation ? (
-                  <Sparkles className="w-3 h-3" />
-                ) : (
-                  <ShoppingCart className="w-3 h-3" />
-                )}
-                <span className="italic">{reason}</span>
-              </div>
+          {/* Recipe + Product Cards */}
+          {!isTyping && !isLoading && recommendedRecipe && (
+            <div className="space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-500">
               
-              {/* Recipe Recommendation Card */}
-              {isRecipeRecommendation && recommendedRecipe && (
+              {/* Recipe Card */}
+              <div>
+                <div className="flex items-center gap-2 text-[#A0522D] text-sm mb-2">
+                  <Sparkles className="w-3 h-3" />
+                  <span className="italic">{currentRec.reason}</span>
+                </div>
                 <div
                   onClick={() => onRecipeClick(recommendedRecipe)}
                   className="bg-white rounded-lg overflow-hidden border border-[#DEB887] cursor-pointer hover:border-[#8B4513] hover:shadow-md transition-all"
@@ -239,30 +220,33 @@ export function AIRecommendation({ recipes, userName, onRecipeClick }: AIRecomme
                       <h4 className="text-[#8B4513] font-semibold mb-1 truncate">
                         {recommendedRecipe.title}
                       </h4>
-                      <p className="text-[#A0522D] text-sm mb-2">
+                      <p className="text-[#A0522D] text-sm mb-1">
                         by {recommendedRecipe.author}
                       </p>
                       <div className="flex items-center gap-3 text-xs text-[#A0522D]">
                         <span>⭐ {recommendedRecipe.rating?.toFixed(1) || 'New'}</span>
                         <span>❤️ {recommendedRecipe.likes}</span>
-                        <span>💬 {recommendedRecipe.comments}</span>
                       </div>
                     </div>
                   </div>
                 </div>
-              )}
+              </div>
 
-              {/* Product Recommendation Card */}
-              {!isRecipeRecommendation && recommendedProduct && (
+              {/* Related Product Card */}
+              <div>
+                <div className="flex items-center gap-2 text-[#A0522D] text-sm mb-2">
+                  <ShoppingCart className="w-3 h-3" />
+                  <span className="italic">{currentRec.productReason}</span>
+                </div>
                 <div
-                  onClick={() => window.open(recommendedProduct.url, '_blank')}
-                  className="bg-white rounded-lg overflow-hidden border border-[#DEB887] cursor-pointer hover:border-[#8B4513] hover:shadow-md transition-all"
+                  onClick={() => window.open(currentRec.relatedProduct.url, '_blank')}
+                  className="bg-white rounded-lg overflow-hidden border border-green-200 cursor-pointer hover:border-green-500 hover:shadow-md transition-all"
                 >
                   <div className="flex gap-3 p-3">
-                    <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
+                    <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
                       <img
-                        src={recommendedProduct.image}
-                        alt={recommendedProduct.name}
+                        src={currentRec.relatedProduct.image}
+                        alt={currentRec.relatedProduct.name}
                         className="w-full h-full object-cover"
                       />
                     </div>
@@ -270,28 +254,28 @@ export function AIRecommendation({ recipes, userName, onRecipeClick }: AIRecomme
                       <div className="flex items-center gap-2 mb-1">
                         <Badge className="bg-green-100 text-green-700 hover:bg-green-100 text-xs">
                           <ShoppingCart className="w-3 h-3 mr-1" />
-                          Product
+                          Related Product
                         </Badge>
-                        {recommendedProduct.discount && (
+                        {currentRec.relatedProduct.discount && (
                           <Badge className="bg-red-100 text-red-600 hover:bg-red-100 text-xs">
-                            {recommendedProduct.discount}
+                            {currentRec.relatedProduct.discount}
                           </Badge>
                         )}
                       </div>
-                      <h4 className="text-[#8B4513] font-semibold mb-1 truncate">
-                        {recommendedProduct.name}
+                      <h4 className="text-[#8B4513] font-semibold text-sm truncate">
+                        {currentRec.relatedProduct.name}
                       </h4>
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-[#A0522D] text-sm">{recommendedProduct.store}</p>
-                          <p className="text-[#8B4513] font-bold">{recommendedProduct.price}</p>
+                      <div className="flex items-center justify-between mt-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[#A0522D] text-xs">{currentRec.relatedProduct.store}</span>
+                          <span className="text-[#8B4513] font-bold text-sm">{currentRec.relatedProduct.price}</span>
                         </div>
                         <Button
                           size="sm"
-                          className="bg-[#8B4513] hover:bg-[#A0522D] text-white text-xs"
+                          className="bg-green-600 hover:bg-green-700 text-white text-xs h-7 px-2"
                           onClick={(e) => {
                             e.stopPropagation();
-                            window.open(recommendedProduct.url, '_blank');
+                            window.open(currentRec.relatedProduct.url, '_blank');
                           }}
                         >
                           <ExternalLink className="w-3 h-3 mr-1" />
@@ -301,7 +285,7 @@ export function AIRecommendation({ recipes, userName, onRecipeClick }: AIRecomme
                     </div>
                   </div>
                 </div>
-              )}
+              </div>
             </div>
           )}
         </>
@@ -309,4 +293,3 @@ export function AIRecommendation({ recipes, userName, onRecipeClick }: AIRecomme
     </div>
   );
 }
-
