@@ -227,10 +227,10 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
   }
 
   return (
-    <div className="max-w-lg mx-auto min-h-screen bg-[#FFF8F0]">
+    <div className="w-full max-w-lg mx-auto min-h-screen bg-[#FFF8F0] md:max-w-2xl lg:max-w-4xl">
       {/* Header */}
-      <header className="bg-white border-b border-[#DEB887] px-4 py-4 sticky top-0 z-10">
-        <div className="flex items-center justify-between">
+      <header className="bg-white border-b border-[#DEB887] px-4 py-4 sticky top-0 z-10 md:px-6">
+        <div className="flex items-center justify-between max-w-3xl mx-auto">
           <button onClick={onCancel} className="text-[#A0522D]">
             <X className="w-6 h-6" />
           </button>
@@ -262,13 +262,13 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
         )}
       </header>
 
-      <div className="p-4">
+      <div className="p-4 md:p-6 lg:p-8 max-w-3xl mx-auto">
         {/* Step 0: Mode Selection */}
         {step === 0 && (
-          <div className="space-y-6">
-            <div className="text-center mb-8">
-              <h3 className="text-[#8B4513] mb-2">Choose Upload Mode</h3>
-              <p className="text-[#A0522D]">How would you like to create your recipe?</p>
+          <div className="space-y-4 md:space-y-6">
+            <div className="text-center mb-6 md:mb-8">
+              <h3 className="text-[#8B4513] mb-2 text-lg md:text-xl">Choose Upload Mode</h3>
+              <p className="text-[#A0522D] text-sm md:text-base">How would you like to create your recipe?</p>
             </div>
 
             {/* Manual Mode */}
@@ -277,15 +277,15 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
                 setUseBetaMode(false);
                 setStep(1);
               }}
-              className="w-full p-6 bg-white border-2 border-[#DEB887] rounded-lg hover:border-[#8B4513] transition-all text-left"
+              className="w-full p-4 md:p-6 bg-white border-2 border-[#DEB887] rounded-lg hover:border-[#8B4513] transition-all text-left"
             >
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-[#FFE8D6] rounded-full flex items-center justify-center flex-shrink-0">
-                  <Camera className="w-6 h-6 text-[#8B4513]" />
+              <div className="flex items-start gap-3 md:gap-4">
+                <div className="w-10 h-10 md:w-12 md:h-12 bg-[#FFE8D6] rounded-full flex items-center justify-center flex-shrink-0">
+                  <Camera className="w-5 h-5 md:w-6 md:h-6 text-[#8B4513]" />
                 </div>
-                <div className="flex-1">
-                  <h4 className="text-[#8B4513] font-semibold mb-2">Manual Upload</h4>
-                  <p className="text-[#A0522D] text-sm">
+                <div className="flex-1 min-w-0">
+                  <h4 className="text-[#8B4513] font-semibold mb-1 md:mb-2 text-sm md:text-base">Manual Upload</h4>
+                  <p className="text-[#A0522D] text-xs md:text-sm">
                     Upload your photo and fill in recipe details step by step
                   </p>
                 </div>
@@ -298,21 +298,21 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
                 setUseBetaMode(true);
                 setStep(1);
               }}
-              className="w-full p-6 bg-gradient-to-br from-[#FFE8D6] to-[#FFDDB8] border-2 border-[#8B4513] rounded-lg hover:shadow-lg transition-all text-left relative overflow-hidden"
+              className="w-full p-4 md:p-6 bg-gradient-to-br from-[#FFE8D6] to-[#FFDDB8] border-2 border-[#8B4513] rounded-lg hover:shadow-lg transition-all text-left relative overflow-hidden"
             >
               <div className="absolute top-2 right-2 bg-[#8B4513] text-white text-xs px-2 py-1 rounded-full">
                 BETA
               </div>
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-[#8B4513] to-[#A0522D] rounded-full flex items-center justify-center flex-shrink-0">
-                  <Sparkles className="w-6 h-6 text-white" />
+              <div className="flex items-start gap-3 md:gap-4">
+                <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-[#8B4513] to-[#A0522D] rounded-full flex items-center justify-center flex-shrink-0">
+                  <Sparkles className="w-5 h-5 md:w-6 md:h-6 text-white" />
                 </div>
-                <div className="flex-1">
-                  <h4 className="text-[#8B4513] font-semibold mb-2">AI Auto-Generate ✨</h4>
-                  <p className="text-[#A0522D] text-sm">
+                <div className="flex-1 min-w-0">
+                  <h4 className="text-[#8B4513] font-semibold mb-1 md:mb-2 text-sm md:text-base">AI Auto-Generate ✨</h4>
+                  <p className="text-[#A0522D] text-xs md:text-sm">
                     Select a food photo and let AI generate the complete recipe
                   </p>
-                  <p className="text-[#8B4513] text-xs mt-2 italic">
+                  <p className="text-[#8B4513] text-xs mt-1 md:mt-2 italic">
                     Choose from preset photos for demo stability
                   </p>
                 </div>
@@ -323,12 +323,12 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
 
         {/* Step 1: Photo and Basic Info */}
         {step === 1 && (
-          <div className="space-y-6">
+          <div className="space-y-4 md:space-y-6">
             <div>
-              <h3 className="text-[#8B4513] mb-4">
+              <h3 className="text-[#8B4513] mb-3 md:mb-4 text-base md:text-lg">
                 {useBetaMode ? (
                   <span className="flex items-center gap-2">
-                    <Sparkles className="w-5 h-5" />
+                    <Sparkles className="w-4 h-4 md:w-5 md:h-5" />
                     Select a photo for AI analysis
                   </span>
                 ) : (
@@ -338,9 +338,9 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
               
               {/* AI Generation Loading - inline with logo reveal animation */}
               {isGenerating && (
-                <div className="bg-white rounded-lg p-6 border-2 border-[#8B4513] text-center">
+                <div className="bg-white rounded-lg p-4 md:p-6 border-2 border-[#8B4513] text-center">
                   {/* Logo reveal from bottom to top */}
-                  <div className="w-24 h-24 mx-auto mb-4 relative overflow-hidden">
+                  <div className="w-20 h-20 md:w-24 md:h-24 mx-auto mb-3 md:mb-4 relative overflow-hidden">
                     <img 
                       src={logoImage} 
                       alt="Loading" 
@@ -357,14 +357,14 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
                       className="w-full h-full object-contain opacity-10"
                     />
                   </div>
-                  <h4 className="text-[#8B4513] mb-1 text-sm font-semibold">
+                  <h4 className="text-[#8B4513] mb-1 text-xs md:text-sm font-semibold">
                     {generationProgress < 25 && "Analyzing image..."}
                     {generationProgress >= 25 && generationProgress < 50 && "Identifying ingredients..."}
                     {generationProgress >= 50 && generationProgress < 80 && "Generating recipe steps..."}
                     {generationProgress >= 80 && "Finalizing recipe..."}
                   </h4>
-                  <p className="text-[#A0522D] text-xs mb-3">AI is working its magic ✨</p>
-                  <div className="w-full bg-[#FFE8D6] rounded-full h-2 overflow-hidden">
+                  <p className="text-[#A0522D] text-xs mb-2 md:mb-3">AI is working its magic ✨</p>
+                  <div className="w-full bg-[#FFE8D6] rounded-full h-1.5 md:h-2 overflow-hidden">
                     <div 
                       className="bg-gradient-to-r from-[#8B4513] to-[#A0522D] h-full rounded-full transition-all duration-300 ease-out"
                       style={{ width: `${generationProgress}%` }}
@@ -376,7 +376,7 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
 
               {/* Photo display or selector */}
               {!isGenerating && photo ? (
-                <div className="relative aspect-square rounded-lg overflow-hidden">
+                <div className="relative aspect-square md:aspect-video rounded-lg overflow-hidden max-w-md mx-auto">
                   <img src={photo} alt="Recipe" className="w-full h-full object-cover" />
                   {useBetaMode && (
                     <div className="absolute top-2 left-2 bg-[#8B4513] text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
@@ -389,50 +389,50 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
                       setPhoto('');
                       setSelectedPresetIndex(null);
                     }}
-                    className="absolute top-2 right-2 bg-white rounded-full p-2 shadow-lg"
+                    className="absolute top-2 right-2 bg-white rounded-full p-1.5 md:p-2 shadow-lg"
                   >
-                    <X className="w-5 h-5 text-[#8B4513]" />
+                    <X className="w-4 h-4 md:w-5 md:h-5 text-[#8B4513]" />
                   </button>
                 </div>
               ) : !isGenerating && useBetaMode ? (
-                <div className="space-y-3">
+                <div className="space-y-2 md:space-y-3">
                   {/* Collapsed state - click to expand */}
                   {!showPhotoSelector ? (
-                    <div className="space-y-3">
+                    <div className="space-y-2 md:space-y-3">
                       {/* Preset photos option */}
                       <button
                         onClick={() => setShowPhotoSelector(true)}
-                        className="flex items-center justify-between w-full p-4 bg-gradient-to-r from-[#FFE8D6] to-[#FFDDB8] border-2 border-[#8B4513] rounded-lg hover:shadow-md transition-all"
+                        className="flex items-center justify-between w-full p-3 md:p-4 bg-gradient-to-r from-[#FFE8D6] to-[#FFDDB8] border-2 border-[#8B4513] rounded-lg hover:shadow-md transition-all"
                       >
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-gradient-to-br from-[#8B4513] to-[#A0522D] rounded-full flex items-center justify-center">
-                            <Sparkles className="w-5 h-5 text-white" />
+                        <div className="flex items-center gap-2 md:gap-3">
+                          <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-[#8B4513] to-[#A0522D] rounded-full flex items-center justify-center flex-shrink-0">
+                            <Sparkles className="w-4 h-4 md:w-5 md:h-5 text-white" />
                           </div>
-                          <div className="text-left">
-                            <span className="text-[#8B4513] font-semibold block">Choose from Photo Library</span>
+                          <div className="text-left min-w-0">
+                            <span className="text-[#8B4513] font-semibold block text-sm md:text-base">Choose from Photo Library</span>
                             <span className="text-[#A0522D] text-xs">7 preset dishes available</span>
                           </div>
                         </div>
-                        <div className="text-[#8B4513]">
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="text-[#8B4513] flex-shrink-0">
+                          <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                           </svg>
                         </div>
                       </button>
 
                       {/* Local upload option */}
-                      <label className="flex items-center justify-between w-full p-4 bg-white border-2 border-[#DEB887] rounded-lg hover:border-[#8B4513] hover:shadow-md transition-all cursor-pointer">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-[#FFE8D6] rounded-full flex items-center justify-center">
-                            <Camera className="w-5 h-5 text-[#8B4513]" />
+                      <label className="flex items-center justify-between w-full p-3 md:p-4 bg-white border-2 border-[#DEB887] rounded-lg hover:border-[#8B4513] hover:shadow-md transition-all cursor-pointer">
+                        <div className="flex items-center gap-2 md:gap-3">
+                          <div className="w-8 h-8 md:w-10 md:h-10 bg-[#FFE8D6] rounded-full flex items-center justify-center flex-shrink-0">
+                            <Camera className="w-4 h-4 md:w-5 md:h-5 text-[#8B4513]" />
                           </div>
-                          <div className="text-left">
-                            <span className="text-[#8B4513] font-semibold block">Upload from Device</span>
+                          <div className="text-left min-w-0">
+                            <span className="text-[#8B4513] font-semibold block text-sm md:text-base">Upload from Device</span>
                             <span className="text-[#A0522D] text-xs">Take or select a photo</span>
                           </div>
                         </div>
-                        <div className="text-[#A0522D]">
-                          <Plus className="w-5 h-5" />
+                        <div className="text-[#A0522D] flex-shrink-0">
+                          <Plus className="w-4 h-4 md:w-5 md:h-5" />
                         </div>
                         <input
                           type="file"
@@ -447,17 +447,17 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
                     <div className="bg-white border-2 border-[#8B4513] rounded-lg overflow-hidden">
                       <button
                         onClick={() => setShowPhotoSelector(false)}
-                        className="flex items-center justify-between w-full p-3 bg-gradient-to-r from-[#FFE8D6] to-[#FFDDB8] border-b border-[#DEB887]"
+                        className="flex items-center justify-between w-full p-2 md:p-3 bg-gradient-to-r from-[#FFE8D6] to-[#FFDDB8] border-b border-[#DEB887]"
                       >
                         <div className="flex items-center gap-2">
-                          <Sparkles className="w-4 h-4 text-[#8B4513]" />
-                          <span className="text-[#8B4513] font-semibold text-sm">Select a Dish</span>
+                          <Sparkles className="w-3 h-3 md:w-4 md:h-4 text-[#8B4513]" />
+                          <span className="text-[#8B4513] font-semibold text-xs md:text-sm">Select a Dish</span>
                         </div>
-                        <svg className="w-5 h-5 text-[#8B4513]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 md:w-5 md:h-5 text-[#8B4513]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
                         </svg>
                       </button>
-                      <div className="p-3 grid grid-cols-3 gap-2 max-h-64 overflow-y-auto">
+                      <div className="p-2 md:p-3 grid grid-cols-3 md:grid-cols-4 gap-1.5 md:gap-2 max-h-48 md:max-h-64 overflow-y-auto">
                         {PRESET_FOOD_PHOTOS.map((preset, index) => (
                           <button
                             key={index}
@@ -469,8 +469,8 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
                               alt={preset.title}
                               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-1">
-                              <span className="text-white text-xs font-medium leading-tight">{preset.title}</span>
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-0.5 md:p-1">
+                              <span className="text-white text-[10px] md:text-xs font-medium leading-tight">{preset.title}</span>
                             </div>
                           </button>
                         ))}
