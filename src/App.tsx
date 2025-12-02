@@ -118,7 +118,6 @@ const mockRecipes: Recipe[] = [
     timestamp: '3 hours ago',
     isLiked: false,
     mealType: 'dinner',
-    userId: 'yiming',
   },
   {
     id: '6',
@@ -135,7 +134,6 @@ const mockRecipes: Recipe[] = [
     timestamp: '1 day ago',
     isLiked: true,
     mealType: 'lunch',
-    userId: 'yiming',
   },
   {
     id: '7',
@@ -152,7 +150,6 @@ const mockRecipes: Recipe[] = [
     timestamp: '2 days ago',
     isLiked: false,
     mealType: 'lunch',
-    userId: 'yiming',
   },
   {
     id: '2',
