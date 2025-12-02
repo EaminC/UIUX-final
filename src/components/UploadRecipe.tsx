@@ -4,6 +4,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { Label } from './ui/label';
+import logoImage from '../assets/25e052c30c60417278690aee9375257caca59348.png';
 
 interface UploadRecipeProps {
   onComplete: (points: number) => void;
@@ -142,23 +143,24 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
     setIsGenerating(true);
     setGenerationProgress(0);
     
-    // Simulate progressive AI analysis with multiple stages (6 seconds total)
+    // Simulate progressive AI analysis with irregular progress values (6 seconds total)
     const stages = [
-      { progress: 10, delay: 600 },
-      { progress: 25, delay: 1400 },
-      { progress: 40, delay: 2200 },
-      { progress: 55, delay: 3000 },
-      { progress: 70, delay: 3800 },
-      { progress: 85, delay: 4600 },
-      { progress: 95, delay: 5400 },
-      { progress: 100, delay: 5800 },
+      { progress: 8, delay: 500 },
+      { progress: 17, delay: 1100 },
+      { progress: 29, delay: 1800 },
+      { progress: 43, delay: 2600 },
+      { progress: 58, delay: 3400 },
+      { progress: 71, delay: 4100 },
+      { progress: 84, delay: 4900 },
+      { progress: 93, delay: 5500 },
+      { progress: 100, delay: 5900 },
     ];
     
     stages.forEach(({ progress, delay }) => {
       setTimeout(() => setGenerationProgress(progress), delay);
     });
     
-    // Complete after 6 seconds
+    // Complete after 6.2 seconds
     setTimeout(() => {
       // Auto-fill all fields based on recipe
       setTitle(recipe.title);
@@ -170,7 +172,7 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
       setIsGenerating(false);
       setGenerationProgress(0);
       setStep(4); // Skip directly to review step (no manual input needed)
-    }, 6000);
+    }, 6200);
   };
 
   const handleSelectPresetPhoto = (index: number) => {
@@ -334,15 +336,32 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
                 )}
               </h3>
               
-              {/* AI Generation Loading - inline */}
+              {/* AI Generation Loading - inline with logo reveal animation */}
               {isGenerating && (
                 <div className="bg-white rounded-lg p-6 border-2 border-[#8B4513] text-center">
-                  <div className="w-12 h-12 border-4 border-[#8B4513] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+                  {/* Logo reveal from bottom to top */}
+                  <div className="w-24 h-24 mx-auto mb-4 relative overflow-hidden">
+                    <img 
+                      src={logoImage} 
+                      alt="Loading" 
+                      className="w-full h-full object-contain absolute bottom-0"
+                      style={{
+                        clipPath: `inset(${100 - generationProgress}% 0 0 0)`,
+                        transition: 'clip-path 0.3s ease-out'
+                      }}
+                    />
+                    {/* Faded background version */}
+                    <img 
+                      src={logoImage} 
+                      alt="" 
+                      className="w-full h-full object-contain opacity-10"
+                    />
+                  </div>
                   <h4 className="text-[#8B4513] mb-1 text-sm font-semibold">
-                    {generationProgress < 30 && "Analyzing image..."}
-                    {generationProgress >= 30 && generationProgress < 60 && "Identifying ingredients..."}
-                    {generationProgress >= 60 && generationProgress < 90 && "Generating recipe steps..."}
-                    {generationProgress >= 90 && "Finalizing recipe..."}
+                    {generationProgress < 25 && "Analyzing image..."}
+                    {generationProgress >= 25 && generationProgress < 50 && "Identifying ingredients..."}
+                    {generationProgress >= 50 && generationProgress < 80 && "Generating recipe steps..."}
+                    {generationProgress >= 80 && "Finalizing recipe..."}
                   </h4>
                   <p className="text-[#A0522D] text-xs mb-3">AI is working its magic ✨</p>
                   <div className="w-full bg-[#FFE8D6] rounded-full h-2 overflow-hidden">
@@ -728,8 +747,8 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
               )}
               <Button
                 onClick={handleSubmit}
-                className={`${useBetaMode ? 'w-full' : 'flex-1'} !bg-[#22c55e] hover:!bg-[#16a34a] text-white shadow-lg font-semibold py-3`}
-                style={{ backgroundColor: '#22c55e' }}
+                className={`${useBetaMode ? 'w-full' : 'flex-1'} !bg-[#8B4513] hover:!bg-[#6B3410] text-white shadow-lg font-semibold py-3 border-2 border-[#6B3410]`}
+                style={{ backgroundColor: '#8B4513' }}
               >
                 <Sparkles className="w-4 h-4 mr-2" />
                 Submit Recipe
