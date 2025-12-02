@@ -223,7 +223,11 @@ export default function App() {
   const handleLogin = (email: string, password: string) => {
     // In real app, this would validate credentials
     setIsAuthenticated(true);
-    setCurrentScreen('menu');
+    if (!hasCompletedOnboarding) {
+      setCurrentScreen('onboarding');
+    } else {
+      setCurrentScreen('menu');
+    }
   };
 
   const handleSignup = (data: import('./components/Signup').SignupData) => {
@@ -242,7 +246,11 @@ export default function App() {
   const handleGoogleAccountSelect = (account: { name: string; email: string }) => {
     setUser({ ...user, name: account.name });
     setIsAuthenticated(true);
-    setCurrentScreen('menu');
+    if (!hasCompletedOnboarding) {
+      setCurrentScreen('onboarding');
+    } else {
+      setCurrentScreen('menu');
+    }
   };
 
   const handleAppleLogin = async () => {
@@ -253,7 +261,11 @@ export default function App() {
   const handleAppleAccountSelect = (account: { name: string; email: string }) => {
     setUser({ ...user, name: account.name });
     setIsAuthenticated(true);
-    setCurrentScreen('menu');
+    if (!hasCompletedOnboarding) {
+      setCurrentScreen('onboarding');
+    } else {
+      setCurrentScreen('menu');
+    }
   };
 
   const handleWeChatLogin = () => {
@@ -264,7 +276,11 @@ export default function App() {
   const handleWeChatAccountSelect = (account: { name: string; email: string }) => {
     setUser({ ...user, name: account.name });
     setIsAuthenticated(true);
-    setCurrentScreen('menu');
+    if (!hasCompletedOnboarding) {
+      setCurrentScreen('onboarding');
+    } else {
+      setCurrentScreen('menu');
+    }
   };
 
   const handlePreferencesComplete = (preferences: string[]) => {
@@ -405,6 +421,13 @@ export default function App() {
     });
   };
 
+  // Handle onboarding completion
+  const handleOnboardingComplete = (userName: string, country: string) => {
+    setUser({ ...user, name: userName });
+    setHasCompletedOnboarding(true);
+    setCurrentScreen('preferences');
+  };
+
   // Listen for profile navigation events
   useEffect(() => {
     const handleProfileNavigate = (e: CustomEvent) => {
@@ -467,6 +490,15 @@ export default function App() {
         />
       );
     }
+  }
+
+  // Render onboarding screen
+  if (isAuthenticated && !hasCompletedOnboarding && currentScreen === 'onboarding') {
+    return (
+      <Onboarding
+        onComplete={handleOnboardingComplete}
+      />
+    );
   }
 
   // Render preferences screen
