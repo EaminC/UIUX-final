@@ -8,6 +8,7 @@ import type { User } from "../App";
 interface ProfileProps {
   user: User;
   recipes: import("../App").Recipe[];
+  likedRecipesCount: number;
   onRecipeClick: (recipeId: string) => void;
   onNavigateToDetails?: (tab: "recipes" | "likes" | "points") => void;
 }
@@ -44,6 +45,7 @@ const achievements = [
 export function Profile({
   user,
   recipes,
+  likedRecipesCount,
   onRecipeClick,
   onNavigateToDetails,
 }: ProfileProps) {
@@ -130,7 +132,7 @@ export function Profile({
               className="text-center cursor-pointer hover:opacity-80 transition-opacity"
             >
               <div className="text-[#8B4513] text-2xl mb-1">
-                {recipes.reduce((sum, r) => sum + (r.isLiked ? 1 : 0), 0)}
+                {likedRecipesCount}
               </div>
               <div className="text-[#A0522D]">Likes</div>
             </button>

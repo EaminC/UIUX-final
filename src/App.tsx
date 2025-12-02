@@ -700,6 +700,7 @@ export default function App() {
         <Profile
           user={user}
           recipes={userRecipes}
+          likedRecipesCount={likedRecipes.length}
           onRecipeClick={handleProfileRecipeClick}
           onNavigateToDetails={(tab) => {
             setProfileDetailTab(tab);
