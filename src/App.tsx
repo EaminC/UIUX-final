@@ -223,9 +223,11 @@ export default function App() {
   const handleLogin = (email: string, password: string) => {
     // In real app, this would validate credentials
     setIsAuthenticated(true);
-    if (!hasCompletedOnboarding) {
+    // Skip onboarding for default user (Yiming Cheng)
+    if (!hasCompletedOnboarding && user.name !== 'Yiming Cheng') {
       setCurrentScreen('onboarding');
     } else {
+      setHasCompletedOnboarding(true);
       setCurrentScreen('menu');
     }
   };
@@ -244,11 +246,16 @@ export default function App() {
   };
 
   const handleGoogleAccountSelect = (account: { name: string; email: string }) => {
-    setUser({ ...user, name: account.name });
+    // Only update user name if it's different from default
+    if (account.name !== user.name) {
+      setUser({ ...user, name: account.name });
+    }
     setIsAuthenticated(true);
-    if (!hasCompletedOnboarding) {
+    // Skip onboarding for default user (Yiming Cheng)
+    if (!hasCompletedOnboarding && account.name !== 'Yiming Cheng') {
       setCurrentScreen('onboarding');
     } else {
+      setHasCompletedOnboarding(true);
       setCurrentScreen('menu');
     }
   };
@@ -259,11 +266,16 @@ export default function App() {
   };
 
   const handleAppleAccountSelect = (account: { name: string; email: string }) => {
-    setUser({ ...user, name: account.name });
+    // Only update user name if it's different from default
+    if (account.name !== user.name) {
+      setUser({ ...user, name: account.name });
+    }
     setIsAuthenticated(true);
-    if (!hasCompletedOnboarding) {
+    // Skip onboarding for default user (Yiming Cheng)
+    if (!hasCompletedOnboarding && account.name !== 'Yiming Cheng') {
       setCurrentScreen('onboarding');
     } else {
+      setHasCompletedOnboarding(true);
       setCurrentScreen('menu');
     }
   };
@@ -274,11 +286,16 @@ export default function App() {
   };
 
   const handleWeChatAccountSelect = (account: { name: string; email: string }) => {
-    setUser({ ...user, name: account.name });
+    // Only update user name if it's different from default
+    if (account.name !== user.name) {
+      setUser({ ...user, name: account.name });
+    }
     setIsAuthenticated(true);
-    if (!hasCompletedOnboarding) {
+    // Skip onboarding for default user (Yiming Cheng)
+    if (!hasCompletedOnboarding && account.name !== 'Yiming Cheng') {
       setCurrentScreen('onboarding');
     } else {
+      setHasCompletedOnboarding(true);
       setCurrentScreen('menu');
     }
   };
@@ -423,7 +440,10 @@ export default function App() {
 
   // Handle onboarding completion
   const handleOnboardingComplete = (userName: string, country: string) => {
-    setUser({ ...user, name: userName });
+    // Only update user info if provided and different
+    if (userName && userName !== user.name) {
+      setUser({ ...user, name: userName, country: country || user.country });
+    }
     setHasCompletedOnboarding(true);
     setCurrentScreen('preferences');
   };
