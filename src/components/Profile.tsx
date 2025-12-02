@@ -123,11 +123,11 @@ export function Profile({ user, recipes, onRecipeClick, onNavigateToDetails, onN
         {/* Reward Progress - Clickable to enter Rewards System */}
         <button
           onClick={onNavigateToRewards}
-          className="w-full text-left bg-gradient-to-r from-orange-400 to-orange-600 rounded-xl p-5 border-2 border-orange-500 md:p-6 md:rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-[1.02]"
+          className="w-full text-left bg-gradient-to-br from-[#5D3A1A] via-[#8B4513] to-[#A0522D] rounded-xl p-5 border-2 border-[#4A2F15] md:p-6 md:rounded-xl shadow-xl hover:shadow-2xl transition-all hover:scale-[1.02]"
         >
           <div className="flex items-start gap-4">
             {/* Current Reward Image */}
-            <div className="w-16 h-16 rounded-lg overflow-hidden border-2 border-white shadow-md flex-shrink-0">
+            <div className="w-16 h-16 rounded-lg overflow-hidden border-3 border-[#FFD700] shadow-lg flex-shrink-0 ring-2 ring-[#FFD700]/50">
               <img 
                 src="https://images.unsplash.com/photo-1600891964092-4316c288032e?w=200&q=80" 
                 alt="Grain-Fed Steak"
@@ -137,17 +137,17 @@ export function Profile({ user, recipes, onRecipeClick, onNavigateToDetails, onN
             
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
-                <Star className="w-4 h-4 text-white fill-white" />
-                <Star className="w-4 h-4 text-white fill-white" />
-                <span className="text-white/80 text-sm ml-1">Level 2</span>
+                <Star className="w-4 h-4 text-[#FFD700] fill-[#FFD700]" />
+                <Star className="w-4 h-4 text-[#FFD700] fill-[#FFD700]" />
+                <span className="text-white/90 text-sm ml-1 font-medium">Level 2</span>
               </div>
-              <h3 className="text-white font-bold">Aspiring Chef</h3>
-              <p className="text-white/80 text-sm">{user.points} / 150 points</p>
+              <h3 className="text-white font-bold text-lg">Aspiring Chef</h3>
+              <p className="text-[#FFE8D6] text-sm">{user.points} / 150 points</p>
               
               {/* Progress Bar */}
-              <div className="mt-2 h-2 bg-white/30 rounded-full overflow-hidden">
+              <div className="mt-2 h-3 bg-black/30 rounded-full overflow-hidden border border-white/20">
                 <div 
-                  className="h-full bg-white rounded-full transition-all"
+                  className="h-full bg-gradient-to-r from-[#FFD700] to-[#FFA500] rounded-full transition-all"
                   style={{ width: `${Math.min((user.points / 150) * 100, 100)}%` }}
                 />
               </div>
@@ -155,20 +155,26 @@ export function Profile({ user, recipes, onRecipeClick, onNavigateToDetails, onN
 
             {/* Next Reward Preview */}
             <div className="flex flex-col items-center">
-              <div className="w-12 h-12 rounded-lg overflow-hidden border-2 border-white/50 shadow-md opacity-70">
+              <div className="w-14 h-14 rounded-lg overflow-hidden border-2 border-white/40 shadow-md relative">
                 <img 
                   src="https://images.unsplash.com/photo-1599084993091-1cb5c0721cc6?w=200&q=80" 
                   alt="Next: Salmon"
-                  className="w-full h-full object-cover grayscale"
+                  className="w-full h-full object-cover brightness-75"
                 />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                  <span className="text-white text-lg">🔒</span>
+                </div>
               </div>
-              <span className="text-white/70 text-xs mt-1">Next</span>
+              <span className="text-[#FFE8D6] text-xs mt-1 font-medium">Next</span>
             </div>
           </div>
           
-          <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/20">
-            <span className="text-white/90 text-sm">🎁 Tap to view rewards</span>
-            <Trophy className="w-5 h-5 text-white" />
+          <div className="flex items-center justify-between mt-4 pt-3 border-t border-white/20">
+            <span className="text-[#FFE8D6] text-sm font-medium">🎁 Tap to view all rewards</span>
+            <div className="flex items-center gap-1 text-[#FFD700]">
+              <Trophy className="w-5 h-5" />
+              <span className="text-sm font-bold">→</span>
+            </div>
           </div>
         </button>
 
