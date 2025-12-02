@@ -1,5 +1,6 @@
 import { Trophy, Star, TrendingUp, Settings } from 'lucide-react';
 import { RecipeCard } from './RecipeCard';
+import { AIRecommendation } from './AIRecommendation';
 import type { Recipe, User } from '../App';
 import { Progress } from './ui/progress';
 
@@ -56,6 +57,15 @@ export function Home({ user, recipes, onLike, onRecipeClick, onComment, onShare,
           <Progress value={progressPercentage} className="h-2" />
         </div>
       </header>
+
+      {/* AI Recommendation */}
+      <div className="mx-4 mt-3 md:mx-6 md:mt-4">
+        <AIRecommendation
+          recipes={recipes}
+          userName={user.name}
+          onRecipeClick={onRecipeClick}
+        />
+      </div>
 
       {/* Weekly Challenge */}
       <div className="mx-4 mt-3 bg-gradient-to-r from-[#FFE8D6] to-[#FFDDB8] p-3 rounded-lg border border-[#DEB887] md:mx-6 md:mt-4 md:p-4">
