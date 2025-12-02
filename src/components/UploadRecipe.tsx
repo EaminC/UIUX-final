@@ -135,13 +135,10 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
   const canProceedToStep3 = ingredients.some(i => i.trim());
   const canSubmit = steps.some(s => s.trim());
 
-  const handleSelectPresetPhoto = (index: number) => {
-    setSelectedPresetIndex(index);
-    const selectedRecipe = PRESET_FOOD_PHOTOS[index];
-    setPhoto(selectedRecipe.url);
+  // AI generation animation helper
+  const runAIGeneration = (photoUrl: string, recipe: typeof PRESET_FOOD_PHOTOS[0]) => {
+    setPhoto(photoUrl);
     setShowPhotoSelector(false);
-    
-    // Start AI generation after selecting photo
     setIsGenerating(true);
     setGenerationProgress(0);
     
@@ -161,17 +158,53 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
     
     // Complete after 3.5 seconds
     setTimeout(() => {
-      // Auto-fill all fields based on selected photo
-      setTitle(selectedRecipe.title);
-      setCuisine(selectedRecipe.cuisine);
-      setMealType(selectedRecipe.mealType);
-      setIngredients(selectedRecipe.ingredients);
-      setSteps(selectedRecipe.steps);
+      // Auto-fill all fields based on recipe
+      setTitle(recipe.title);
+      setCuisine(recipe.cuisine);
+      setMealType(recipe.mealType);
+      setIngredients(recipe.ingredients);
+      setSteps(recipe.steps);
       
       setIsGenerating(false);
       setGenerationProgress(0);
-      setStep(4); // Skip to review step
+      setStep(4); // Skip directly to review step (no manual input needed)
     }, 3500);
+  };
+
+  const handleSelectPresetPhoto = (index: number) => {
+    setSelectedPresetIndex(index);
+    const selectedRecipe = PRESET_FOOD_PHOTOS[index];
+    runAIGeneration(selectedRecipe.url, selectedRecipe);
+  };
+
+  // Handle local photo upload in Beta mode - always generates 红烧肉 recipe
+  const handleBetaLocalUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const photoUrl = reader.result as string;
+        // Use 红烧肉 (Braised Pork) as the default AI-generated recipe for local uploads
+        const defaultRecipe = {
+          url: photoUrl,
+          title: 'Homestyle Braised Pork (红烧肉)',
+          cuisine: 'Chinese',
+          mealType: 'dinner' as const,
+          ingredients: ['Pork belly 500g', 'Rock sugar 30g', 'Light soy sauce 2 tbsp', 'Dark soy sauce 1 tbsp', 'Shaoxing wine 2 tbsp', 'Ginger slices', 'Star anise 2 pcs', 'Cinnamon stick', 'Green onions'],
+          steps: [
+            'Cut pork belly into 3cm cubes, blanch in boiling water for 3 minutes',
+            'Heat wok with oil, add rock sugar and melt until caramelized',
+            'Add pork cubes and stir-fry until evenly coated with caramel',
+            'Add ginger, star anise, cinnamon, and green onions',
+            'Pour in soy sauces and Shaoxing wine, add hot water to cover',
+            'Bring to boil, then simmer on low heat for 1.5 hours until tender',
+            'Turn up heat to reduce sauce until thick and glossy'
+          ]
+        };
+        runAIGeneration(photoUrl, defaultRecipe);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   if (showCelebration) {
@@ -344,25 +377,50 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
                 <div className="space-y-3">
                   {/* Collapsed state - click to expand */}
                   {!showPhotoSelector ? (
-                    <button
-                      onClick={() => setShowPhotoSelector(true)}
-                      className="flex items-center justify-between w-full p-4 bg-gradient-to-r from-[#FFE8D6] to-[#FFDDB8] border-2 border-[#8B4513] rounded-lg hover:shadow-md transition-all"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-[#8B4513] to-[#A0522D] rounded-full flex items-center justify-center">
-                          <Sparkles className="w-5 h-5 text-white" />
+                    <div className="space-y-3">
+                      {/* Preset photos option */}
+                      <button
+                        onClick={() => setShowPhotoSelector(true)}
+                        className="flex items-center justify-between w-full p-4 bg-gradient-to-r from-[#FFE8D6] to-[#FFDDB8] border-2 border-[#8B4513] rounded-lg hover:shadow-md transition-all"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-gradient-to-br from-[#8B4513] to-[#A0522D] rounded-full flex items-center justify-center">
+                            <Sparkles className="w-5 h-5 text-white" />
+                          </div>
+                          <div className="text-left">
+                            <span className="text-[#8B4513] font-semibold block">Choose from Photo Library</span>
+                            <span className="text-[#A0522D] text-xs">7 preset dishes available</span>
+                          </div>
                         </div>
-                        <div className="text-left">
-                          <span className="text-[#8B4513] font-semibold block">Choose from Photo Library</span>
-                          <span className="text-[#A0522D] text-xs">7 preset dishes available</span>
+                        <div className="text-[#8B4513]">
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
                         </div>
-                      </div>
-                      <div className="text-[#8B4513]">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </div>
-                    </button>
+                      </button>
+
+                      {/* Local upload option */}
+                      <label className="flex items-center justify-between w-full p-4 bg-white border-2 border-[#DEB887] rounded-lg hover:border-[#8B4513] hover:shadow-md transition-all cursor-pointer">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-[#FFE8D6] rounded-full flex items-center justify-center">
+                            <Camera className="w-5 h-5 text-[#8B4513]" />
+                          </div>
+                          <div className="text-left">
+                            <span className="text-[#8B4513] font-semibold block">Upload from Device</span>
+                            <span className="text-[#A0522D] text-xs">Take or select a photo</span>
+                          </div>
+                        </div>
+                        <div className="text-[#A0522D]">
+                          <Plus className="w-5 h-5" />
+                        </div>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleBetaLocalUpload}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
                   ) : (
                     /* Expanded state - show photo grid */
                     <div className="bg-white border-2 border-[#8B4513] rounded-lg overflow-hidden">
