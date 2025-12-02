@@ -9,6 +9,7 @@ interface ProfileProps {
   recipes: import('../App').Recipe[];
   onRecipeClick: (recipeId: string) => void;
   onNavigateToDetails?: (tab: 'recipes' | 'likes' | 'points') => void;
+  onNavigateToRewards?: () => void;
 }
 
 
@@ -41,9 +42,10 @@ const achievements = [
   },
 ];
 
-export function Profile({ user, recipes, onRecipeClick, onNavigateToDetails }: ProfileProps) {
-  const pointsToSteak = 100;
-  const progressPercentage = (user.points / pointsToSteak) * 100;
+export function Profile({ user, recipes, onRecipeClick, onNavigateToDetails, onNavigateToRewards }: ProfileProps) {
+  const pointsToNextLevel = 50; // Points needed for next level
+  const currentLevelPoints = user.points % pointsToNextLevel;
+  const progressPercentage = (currentLevelPoints / pointsToNextLevel) * 100;
 
   return (
     <div className="max-w-lg mx-auto md:max-w-none md:w-full">
@@ -118,19 +120,57 @@ export function Profile({ user, recipes, onRecipeClick, onNavigateToDetails }: P
           </div>
         </div>
 
-        {/* Reward Progress */}
-        <div className="bg-gradient-to-r from-[#FFE8D6] to-[#FFDDB8] rounded-lg p-6 border border-[#DEB887] md:p-8 md:rounded-xl md:shadow-sm">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
-              <Trophy className="w-6 h-6 text-[#8B4513]" />
+        {/* Reward Progress - Clickable to enter Rewards System */}
+        <button
+          onClick={onNavigateToRewards}
+          className="w-full text-left bg-gradient-to-r from-orange-400 to-orange-600 rounded-xl p-5 border-2 border-orange-500 md:p-6 md:rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-[1.02]"
+        >
+          <div className="flex items-start gap-4">
+            {/* Current Reward Image */}
+            <div className="w-16 h-16 rounded-lg overflow-hidden border-2 border-white shadow-md flex-shrink-0">
+              <img 
+                src="https://images.unsplash.com/photo-1600891964092-4316c288032e?w=200&q=80" 
+                alt="Grain-Fed Steak"
+                className="w-full h-full object-cover"
+              />
             </div>
-            <div>
-              <h3 className="text-[#8B4513]">Free Premium Steak</h3>
-              <p className="text-[#A0522D]">{pointsToSteak - user.points} points to go!</p>
+            
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1">
+                <Star className="w-4 h-4 text-white fill-white" />
+                <Star className="w-4 h-4 text-white fill-white" />
+                <span className="text-white/80 text-sm ml-1">Level 2</span>
+              </div>
+              <h3 className="text-white font-bold">Aspiring Chef</h3>
+              <p className="text-white/80 text-sm">{user.points} / 150 points</p>
+              
+              {/* Progress Bar */}
+              <div className="mt-2 h-2 bg-white/30 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-white rounded-full transition-all"
+                  style={{ width: `${Math.min((user.points / 150) * 100, 100)}%` }}
+                />
+              </div>
+            </div>
+
+            {/* Next Reward Preview */}
+            <div className="flex flex-col items-center">
+              <div className="w-12 h-12 rounded-lg overflow-hidden border-2 border-white/50 shadow-md opacity-70">
+                <img 
+                  src="https://images.unsplash.com/photo-1599084993091-1cb5c0721cc6?w=200&q=80" 
+                  alt="Next: Salmon"
+                  className="w-full h-full object-cover grayscale"
+                />
+              </div>
+              <span className="text-white/70 text-xs mt-1">Next</span>
             </div>
           </div>
-          <Progress value={progressPercentage} className="h-3" />
-        </div>
+          
+          <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/20">
+            <span className="text-white/90 text-sm">🎁 Tap to view rewards</span>
+            <Trophy className="w-5 h-5 text-white" />
+          </div>
+        </button>
 
         {/* Achievements */}
         <div>

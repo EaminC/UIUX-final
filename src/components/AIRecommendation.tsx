@@ -101,7 +101,8 @@ export function AIRecommendation({ recipes, userName, onRecipeClick }: AIRecomme
   const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [currentResponse, setCurrentResponse] = useState(0);
+  // Start with a random response to mix recipes and products
+  const [currentResponse, setCurrentResponse] = useState(() => Math.floor(Math.random() * AI_RESPONSES.length));
   const [showRecommendation, setShowRecommendation] = useState(false);
 
   const currentAIResponse = AI_RESPONSES[currentResponse];
