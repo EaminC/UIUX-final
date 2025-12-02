@@ -73,6 +73,8 @@ const PRESET_FOOD_PHOTOS = [
 export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
   const [step, setStep] = useState(0); // Start at 0 for mode selection
   const [useBetaMode, setUseBetaMode] = useState(false);
+  const [showPhotoSelector, setShowPhotoSelector] = useState(false);
+  const [selectedPresetIndex, setSelectedPresetIndex] = useState<number | null>(null);
   const [photo, setPhoto] = useState<string>('');
   const [title, setTitle] = useState('');
   const [cuisine, setCuisine] = useState('');
@@ -140,25 +142,25 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
     }, 2000);
   };
 
-  const handleBetaGeneration = () => {
-    setIsGenerating(true);
+  const handleSelectPresetPhoto = (index: number) => {
+    setSelectedPresetIndex(index);
+    const selectedRecipe = PRESET_FOOD_PHOTOS[index];
+    setPhoto(selectedRecipe.url);
+    setShowPhotoSelector(false);
     
-    // Simulate AI processing time
+    // Start AI generation after selecting photo
+    setIsGenerating(true);
     setTimeout(() => {
-      // Randomly select a preset recipe
-      const randomRecipe = PRESET_FOOD_PHOTOS[Math.floor(Math.random() * PRESET_FOOD_PHOTOS.length)];
-      
-      // Auto-fill all fields
-      setPhoto(randomRecipe.url);
-      setTitle(randomRecipe.title);
-      setCuisine(randomRecipe.cuisine);
-      setMealType(randomRecipe.mealType);
-      setIngredients(randomRecipe.ingredients);
-      setSteps(randomRecipe.steps);
+      // Auto-fill all fields based on selected photo
+      setTitle(selectedRecipe.title);
+      setCuisine(selectedRecipe.cuisine);
+      setMealType(selectedRecipe.mealType);
+      setIngredients(selectedRecipe.ingredients);
+      setSteps(selectedRecipe.steps);
       
       setIsGenerating(false);
       setStep(4); // Skip to review step
-    }, 2500); // 2.5 seconds for dramatic effect
+    }, 2000); // 2 seconds for AI analysis
   };
 
   if (showCelebration) {
@@ -178,6 +180,65 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
 
   return (
     <div className="max-w-lg mx-auto min-h-screen bg-[#FFF8F0]">
+      {/* Photo Selector Modal for Beta Mode */}
+      {showPhotoSelector && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg w-full max-w-lg max-h-[80vh] overflow-hidden">
+            <div className="p-4 border-b border-[#DEB887] flex items-center justify-between">
+              <h3 className="text-[#8B4513] font-semibold flex items-center gap-2">
+                <Sparkles className="w-5 h-5" />
+                Select a Dish
+              </h3>
+              <button 
+                onClick={() => setShowPhotoSelector(false)}
+                className="text-[#A0522D] hover:text-[#8B4513]"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-4 overflow-y-auto max-h-[60vh]">
+              <p className="text-[#A0522D] text-sm mb-4">
+                Choose a dish and AI will generate the complete recipe for you
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                {PRESET_FOOD_PHOTOS.map((preset, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleSelectPresetPhoto(index)}
+                    className="relative aspect-square rounded-lg overflow-hidden border-2 border-[#DEB887] hover:border-[#8B4513] transition-all hover:shadow-lg group"
+                  >
+                    <img 
+                      src={preset.url} 
+                      alt={preset.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-2">
+                      <div className="text-white text-left">
+                        <div className="font-semibold text-sm">{preset.title}</div>
+                        <div className="text-xs opacity-80">{preset.cuisine}</div>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* AI Generation Loading Modal */}
+      {isGenerating && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-8 max-w-sm mx-4 text-center">
+            <div className="w-16 h-16 border-4 border-[#8B4513] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <h3 className="text-[#8B4513] mb-2">AI is analyzing the photo...</h3>
+            <p className="text-[#A0522D] text-sm">
+              Identifying ingredients and generating recipe steps
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <header className="bg-white border-b border-[#DEB887] px-4 py-4 sticky top-0 z-10">
         <div className="flex items-center justify-between">
@@ -246,7 +307,7 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
             <button
               onClick={() => {
                 setUseBetaMode(true);
-                handleBetaGeneration();
+                setStep(1);
               }}
               className="w-full p-6 bg-gradient-to-br from-[#FFE8D6] to-[#FFDDB8] border-2 border-[#8B4513] rounded-lg hover:shadow-lg transition-all text-left relative overflow-hidden"
             >
@@ -260,27 +321,14 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
                 <div className="flex-1">
                   <h4 className="text-[#8B4513] font-semibold mb-2">AI Auto-Generate ✨</h4>
                   <p className="text-[#A0522D] text-sm">
-                    Let AI analyze a food photo and generate the complete recipe for you
+                    Select a food photo and let AI generate the complete recipe
                   </p>
                   <p className="text-[#8B4513] text-xs mt-2 italic">
-                    Uses preset photos for demo stability
+                    Choose from preset photos for demo stability
                   </p>
                 </div>
               </div>
             </button>
-
-            {/* AI Generation Loading */}
-            {isGenerating && (
-              <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-                <div className="bg-white rounded-lg p-8 max-w-sm mx-4 text-center">
-                  <div className="w-16 h-16 border-4 border-[#8B4513] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                  <h3 className="text-[#8B4513] mb-2">AI is working its magic...</h3>
-                  <p className="text-[#A0522D] text-sm">
-                    Analyzing food photo and generating recipe
-                  </p>
-                </div>
-              </div>
-            )}
           </div>
         )}
 
@@ -288,18 +336,50 @@ export function UploadRecipe({ onComplete, onCancel }: UploadRecipeProps) {
         {step === 1 && (
           <div className="space-y-6">
             <div>
-              <h3 className="text-[#8B4513] mb-4">Let's start with a photo</h3>
+              <h3 className="text-[#8B4513] mb-4">
+                {useBetaMode ? (
+                  <span className="flex items-center gap-2">
+                    <Sparkles className="w-5 h-5" />
+                    Select a photo for AI analysis
+                  </span>
+                ) : (
+                  "Let's start with a photo"
+                )}
+              </h3>
               
               {photo ? (
                 <div className="relative aspect-square rounded-lg overflow-hidden">
                   <img src={photo} alt="Recipe" className="w-full h-full object-cover" />
+                  {useBetaMode && (
+                    <div className="absolute top-2 left-2 bg-[#8B4513] text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                      <Sparkles className="w-3 h-3" />
+                      BETA
+                    </div>
+                  )}
                   <button
-                    onClick={() => setPhoto('')}
+                    onClick={() => {
+                      setPhoto('');
+                      setSelectedPresetIndex(null);
+                    }}
                     className="absolute top-2 right-2 bg-white rounded-full p-2 shadow-lg"
                   >
                     <X className="w-5 h-5 text-[#8B4513]" />
                   </button>
                 </div>
+              ) : useBetaMode ? (
+                <button
+                  onClick={() => setShowPhotoSelector(true)}
+                  className="flex flex-col items-center justify-center aspect-square border-2 border-dashed border-[#8B4513] rounded-lg cursor-pointer hover:bg-[#FFE8D6] transition-colors bg-gradient-to-br from-[#FFF8F0] to-[#FFE8D6] w-full"
+                >
+                  <div className="w-16 h-16 bg-gradient-to-br from-[#8B4513] to-[#A0522D] rounded-full flex items-center justify-center mb-4">
+                    <Sparkles className="w-8 h-8 text-white" />
+                  </div>
+                  <span className="text-[#8B4513] mb-2 font-semibold">Choose from Photo Library</span>
+                  <span className="text-[#A0522D] text-sm">Select a dish for AI to analyze</span>
+                  <span className="text-[#8B4513] text-xs mt-2 bg-[#8B4513]/10 px-3 py-1 rounded-full">
+                    7 preset dishes available
+                  </span>
+                </button>
               ) : (
                 <label className="flex flex-col items-center justify-center aspect-square border-2 border-dashed border-[#DEB887] rounded-lg cursor-pointer hover:border-[#8B4513] transition-colors bg-white">
                   <Camera className="w-16 h-16 text-[#A0522D] mb-4" />
