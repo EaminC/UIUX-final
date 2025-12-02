@@ -2,7 +2,6 @@ import { Trophy, Star, TrendingUp, Settings } from 'lucide-react';
 import { RecipeCard } from './RecipeCard';
 import { AIRecommendation } from './AIRecommendation';
 import type { Recipe, User } from '../App';
-import { Progress } from './ui/progress';
 
 interface HomeProps {
   user: User;
@@ -12,9 +11,10 @@ interface HomeProps {
   onComment?: (recipeId: string) => void;
   onShare?: (recipe: Recipe) => void;
   onSettingsClick?: () => void;
+  onRate?: (recipeId: string, rating: number) => void;
 }
 
-export function Home({ user, recipes, onLike, onRecipeClick, onComment, onShare, onSettingsClick }: HomeProps) {
+export function Home({ user, recipes, onLike, onRecipeClick, onComment, onShare, onSettingsClick, onRate }: HomeProps) {
 
   const pointsToNextLevel = 150; // Same as Profile page
   const progressPercentage = Math.min((user.points / pointsToNextLevel) * 100, 100);
@@ -54,7 +54,23 @@ export function Home({ user, recipes, onLike, onRecipeClick, onComment, onShare,
             </div>
             <span className="text-[#A0522D]">{pointsToNextLevel - user.points} pts to go!</span>
           </div>
-          <Progress value={progressPercentage} className="h-2" />
+          
+          {/* Progress Bar - Completely Redesigned */}
+          <div className="relative h-3 w-full bg-[#FFE8D6] rounded-full overflow-hidden border border-[#DEB887]">
+            {/* 1. Background Layer for the first 1/3 (Darker Beige) */}
+            <div 
+              className="absolute left-0 top-0 bottom-0 bg-[#DEB887]" 
+              style={{ width: "33.33%" }} 
+            />
+            
+            {/* 2. Actual Progress Fill (Dark Brown) - Renders on top of background */}
+            <div
+              className="absolute left-0 top-0 bottom-0 bg-[#8B4513] transition-all duration-500"
+              style={{
+                width: `${progressPercentage}%`,
+              }}
+            />
+          </div>
         </div>
       </header>
 
@@ -92,6 +108,7 @@ export function Home({ user, recipes, onLike, onRecipeClick, onComment, onShare,
                 onLike={onLike}
                 onComment={onComment}
                 onShare={onShare}
+                onRate={onRate}
               />
             </div>
           ))}

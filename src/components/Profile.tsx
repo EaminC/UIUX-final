@@ -1,4 +1,5 @@
-import { Award, ChefHat, Star, Trophy, TrendingUp } from "lucide-react";
+import React from "react";
+import { Award, ChefHat, Star, Trophy, TrendingUp, Lock } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
 import { Badge } from "./ui/badge";
 import { Progress } from "./ui/progress";
@@ -46,9 +47,11 @@ export function Profile({
   onRecipeClick,
   onNavigateToDetails,
 }: ProfileProps) {
-  const pointsToNextLevel = 50; // Points needed for next level
-  const currentLevelPoints = user.points % pointsToNextLevel;
-  const progressPercentage = (currentLevelPoints / pointsToNextLevel) * 100;
+  const nextLevelPoints = 150; // Points needed for next level
+  const progressPercentage = Math.min(
+    (user.points / nextLevelPoints) * 100,
+    100
+  );
 
   return (
     <div className="max-w-lg mx-auto md:max-w-none md:w-full">
@@ -171,20 +174,28 @@ export function Profile({
               </div>
               <p className="text-[#8B4513] font-semibold">Aspiring Chef</p>
               <p className="text-[#A0522D] text-sm mb-2">
-                {user.points} / 150 points
+                {user.points} / {nextLevelPoints}
               </p>
 
-              {/* Progress Bar */}
-              <div className="h-3 bg-[#DEB887] rounded-full overflow-hidden">
+              {/* Progress Bar - Completely Redesigned */}
+              <div className="relative h-4 w-full bg-[#FFE8D6] rounded-full overflow-hidden border border-[#DEB887]">
+                {/* 1. Background Layer for the first 1/3 (Darker Beige) */}
                 <div
-                  className="h-full bg-gradient-to-r from-[#8B4513] to-[#A0522D] rounded-full transition-all"
+                  className="absolute left-0 top-0 bottom-0 bg-[#DEB887]"
+                  style={{ width: "33.33%" }}
+                />
+
+                {/* 2. Actual Progress Fill (Dark Brown) - Renders on top of background */}
+                <div
+                  className="absolute left-0 top-0 bottom-0 bg-[#8B4513] transition-all duration-500"
                   style={{
-                    width: `${Math.min((user.points / 150) * 100, 100)}%`,
+                    width: `${progressPercentage}%`,
                   }}
                 />
               </div>
+
               <p className="text-[#A0522D] text-xs mt-1">
-                {150 - user.points} pts to next reward
+                {Math.max(nextLevelPoints - user.points, 0)} pts to next reward
               </p>
             </div>
 
@@ -197,8 +208,11 @@ export function Profile({
                 <img
                   src="https://images.unsplash.com/photo-1599084993091-1cb5c0721cc6?w=200&q=80"
                   alt="Next: Salmon"
-                  className="w-full h-full object-cover grayscale opacity-50"
+                  className="w-full h-full object-cover grayscale"
                 />
+                <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                  <Lock className="w-7 h-7 text-white drop-shadow" />
+                </div>
               </div>
               <span className="text-gray-400 text-xs mt-2 font-medium">
                 Next

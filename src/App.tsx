@@ -429,7 +429,7 @@ export default function App() {
       // Fallback: copy to clipboard
       navigator.clipboard.writeText(`${recipe.title} - ${window.location.href}`);
       alert('Recipe link copied to clipboard!');
-    }
+    };
   };
 
   const handleStoreClick = (storeName: string, address: string) => {
@@ -667,6 +667,7 @@ export default function App() {
           onComment={handleComment}
           onShare={handleShare}
           onSettingsClick={() => setCurrentScreen('settings')}
+          onRate={handleRate}
         />
       )}
       {currentScreen === 'settings' && (
