@@ -144,7 +144,7 @@ export function Profile({
           <div className="flex items-center gap-4">
             {/* Current Reward - Steak (larger) */}
             <div className="flex flex-col items-center">
-              <div className="w-24 h-24 rounded-xl overflow-hidden border-3 border-[#228B22] shadow-lg">
+              <div className="rounded-xl overflow-hidden border-3 border-[#228B22] shadow-lg" style={{ width: '80px', height: '80px' }}>
                 <img
                   src="https://images.unsplash.com/photo-1600891964092-4316c288032e?w=200&q=80"
                   alt="Grain-Fed Steak"
@@ -187,7 +187,7 @@ export function Profile({
 
             {/* Next Reward - Salmon (smaller, locked) */}
             <div className="flex flex-col items-center">
-              <div className="w-12 h-12 rounded-xl overflow-hidden border-2 border-gray-300 shadow-md relative">
+              <div className="rounded-xl overflow-hidden border-2 border-gray-300 shadow-md relative" style={{ width: '52px', height: '52px' }}>
                 <img
                   src="https://images.unsplash.com/photo-1599084993091-1cb5c0721cc6?w=200&q=80"
                   alt="Next: Salmon"
